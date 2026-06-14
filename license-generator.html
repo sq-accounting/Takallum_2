@@ -41,6 +41,15 @@
           <input id="custId" type="text" placeholder="Бос → автоматты жасалады" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm mono">
         </div>
 
+        <div class="sm:col-span-2">
+          <label class="flex items-center gap-2 mb-1 cursor-pointer">
+            <input id="bindDevice" type="checkbox" checked onchange="onBindChange()" class="w-4 h-4 accent-emerald-600">
+            <span class="text-xs font-bold text-slate-700">Құрылғыға байлау <span class="text-emerald-700">(ұсынылады — кілт тек бір құрылғыда ашылады)</span></span>
+          </label>
+          <input id="deviceId" type="text" placeholder="Тұтынушы жіберген Device ID-ді осында қойыңыз" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm mono">
+          <p class="text-[11px] text-slate-400 mt-1">Тұтынушы бағдарламаны ашқанда көрсетілген «Device ID» кодын осы өріске енгізіңіз. Кілт сол құрылғыда ғана жұмыс істейді.</p>
+        </div>
+
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">Жарамдылық мерзімі</label>
           <select id="durationSel" onchange="onDurationChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white">
@@ -96,6 +105,7 @@
               <th class="py-2 pr-2 font-bold">ID</th>
               <th class="py-2 pr-2 font-bold">Берілді</th>
               <th class="py-2 pr-2 font-bold">Аяқталуы</th>
+              <th class="py-2 pr-2 font-bold">Құрылғы</th>
               <th class="py-2 pr-2 font-bold"></th>
             </tr>
           </thead>
@@ -146,10 +156,17 @@
     if (!sec) return 'мерзімсіз';
     return new Date(sec*1000).toLocaleDateString('kk-KZ', {year:'numeric',month:'2-digit',day:'2-digit'});
   }
+  function normalizeDev(s) { return String(s == null ? '' : s).toUpperCase().replace(/[^0-9A-Z]/g, ''); }
+  function prettyDev(id) { return normalizeDev(id).replace(/(.{4})/g, '$1-').replace(/-$/, ''); }
 
   function onDurationChange() {
     const v = document.getElementById('durationSel').value;
     document.getElementById('customDateWrap').classList.toggle('hidden', v !== '-1');
+  }
+  function onBindChange() {
+    const on = document.getElementById('bindDevice').checked;
+    document.getElementById('deviceId').disabled = !on;
+    document.getElementById('deviceId').classList.toggle('opacity-50', !on);
   }
 
   async function signPayload(payload) {
@@ -166,6 +183,13 @@
     const now = Math.floor(Date.now()/1000);
     const payload = { v:1, id: (document.getElementById('custId').value.trim() || randId()), n: name, iat: now };
 
+    if (document.getElementById('bindDevice').checked) {
+      const dev = normalizeDev(document.getElementById('deviceId').value);
+      if (!dev) { alert('Құрылғыға байлау қосулы. Тұтынушының Device ID-ін енгізіңіз (немесе байлауды өшіріңіз).'); return; }
+      if (dev.length < 8) { alert('Device ID тым қысқа сияқты. Тұтынушыдан толық кодты сұраңыз.'); return; }
+      payload.dev = dev;
+    }
+
     if (sel === '-1') {
       const d = document.getElementById('customDate').value;
       if (!d) { alert('Аяқталу күнін таңдаңыз.'); return; }
@@ -181,11 +205,11 @@
     document.getElementById('custId').value = payload.id; // жаңартуға ыңғайлы болу үшін
     document.getElementById('resultKey').value = key;
     document.getElementById('resultSummary').innerText =
-      `${payload.n}  ·  ID: ${payload.id}  ·  ${payload.exp ? 'аяқталуы: ' + fmtDate(payload.exp) : 'мерзімсіз'}  ·  ${key.length} таңба`;
+      `${payload.n}  ·  ID: ${payload.id}  ·  ${payload.exp ? 'аяқталуы: ' + fmtDate(payload.exp) : 'мерзімсіз'}  ·  ${payload.dev ? '🔒 ' + prettyDev(payload.dev) : 'құрылғыға байланбаған'}`;
     document.getElementById('resultWrap').classList.remove('hidden');
     document.getElementById('copyMsg').innerText = '';
 
-    addToLog({ id:payload.id, n:payload.n, iat:payload.iat, exp:payload.exp || null, key });
+    addToLog({ id:payload.id, n:payload.n, iat:payload.iat, exp:payload.exp || null, dev:payload.dev || null, key });
   }
 
   function copyResult() {
@@ -211,7 +235,7 @@
       const p = JSON.parse(new TextDecoder().decode(pB));
       const expired = p.exp && (Date.now()/1000) > p.exp;
       el.className = 'mt-3 text-sm font-bold ' + (expired ? 'text-amber-600' : 'text-emerald-600');
-      el.innerText = `${expired ? '⚠ Қолтаңба дұрыс, бірақ МЕРЗІМІ БІТКЕН' : '✓ Жарамды'} · ${p.n || ''} · ID: ${p.id || ''} · ${p.exp ? 'аяқталуы: ' + fmtDate(p.exp) : 'мерзімсіз'}`;
+      el.innerText = `${expired ? '⚠ Қолтаңба дұрыс, бірақ МЕРЗІМІ БІТКЕН' : '✓ Жарамды'} · ${p.n || ''} · ID: ${p.id || ''} · ${p.exp ? 'аяқталуы: ' + fmtDate(p.exp) : 'мерзімсіз'} · ${p.dev ? '🔒 құрылғы: ' + prettyDev(p.dev) : 'құрылғыға байланбаған'}`;
     } catch(e) {
       el.className = 'mt-3 text-sm font-bold text-rose-600'; el.innerText = '✗ Кілтті оқу мүмкін болмады.';
     }
@@ -250,6 +274,7 @@
         <td class="py-2 pr-2 mono text-slate-500">${esc(e.id)}</td>
         <td class="py-2 pr-2 text-slate-500">${fmtDate(e.iat)}</td>
         <td class="py-2 pr-2 text-slate-500">${e.exp ? fmtDate(e.exp) : 'мерзімсіз'}</td>
+        <td class="py-2 pr-2 mono text-slate-500">${e.dev ? '🔒 ' + esc(prettyDev(e.dev)) : '—'}</td>
         <td class="py-2 pr-2 text-right whitespace-nowrap">
           <button data-i="${i}" class="copyLog bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2 py-1 rounded">көшіру</button>
         </td>`;
