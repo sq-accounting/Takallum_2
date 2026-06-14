@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Madrasa Test IQ — Араб тілінің интерактивті тренажеры</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ar-scale: 1; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #1e293b;
+    background-color: #e6f4ea;
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(16,185,129,0.12), transparent 42%),
+      radial-gradient(circle at 84% 88%, rgba(217,119,6,0.08), transparent 46%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'%3E%3Cg fill='none' stroke='%2310b981' stroke-opacity='0.06' stroke-width='1.2'%3E%3Cpath d='M45 8l10 27 27 10-27 10-10 27-10-27-27-10 27-10z'/%3E%3Ccircle cx='45' cy='45' r='20'/%3E%3C/g%3E%3C/svg%3E");
+    background-attachment: fixed;
+  }
+
+  .arabic-text { font-family: 'Amiri', serif; direction: rtl; }
+
+  /* Бүкіл қосымшадағы мәтінді біркелкі масштабтайтын айнымалылар.
+     Қаріп өлшемін өзгерткенде араб әріптері де, қазақша сөздер де
+     бір --ar-scale айнымалысымен қатар үлкейіп-кішірейеді. */
+  .ar-hero   { font-size: calc(3.25rem * var(--ar-scale)); line-height: 1.35; }
+  .ar-option { font-size: calc(1.45rem * var(--ar-scale)); }
+  .ar-chip   { font-size: calc(1.45rem * var(--ar-scale)); }
+  .ar-dict   { font-size: calc(1.75rem * var(--ar-scale)); }
+  .ar-line   { font-size: calc(1.9rem  * var(--ar-scale)); }
+
+  /* Қазақша мәтінді араб мәтінімен бірге масштабтайтын кластар
+     (Tailwind-тің бекітілген өлшемдерін осы айнымалыға байлап қояды) */
+  .kz-question { font-size: calc(1.125rem * var(--ar-scale)); }  /* ~text-lg  */
+  .kz-option   { font-size: calc(0.875rem * var(--ar-scale)); }  /* ~text-sm  */
+  .kz-text     { font-size: calc(0.75rem  * var(--ar-scale)); }  /* ~text-xs  */
+  .kz-translit { font-size: calc(0.625rem * var(--ar-scale)); }  /* ~text-[10px] */
+  /* Қазақша сөзді үлкен «герой» блокта дұрыс (солдан оңға) көрсету */
+  .kz-hero     { font-size: calc(2.5rem  * var(--ar-scale)); line-height: 1.3; direction: ltr; }
+
+  kbd {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px; font-weight: 800;
+    min-width: 22px; height: 22px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 6px; padding: 0 6px;
+  }
+
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
+  ::-webkit-scrollbar-track { background: #c8e6cf; }
+  ::-webkit-scrollbar-thumb { background: #2e7d4f; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #1b5e3a; }
+
+  .fade-in { animation: fadeIn .35s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .pop { animation: pop .28s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes pop { from { transform: scale(.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  .shake { animation: shake .4s ease both; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+
+  .confetti-piece {
+    position: fixed; top: -12px; width: 10px; height: 14px;
+    border-radius: 2px; z-index: 60; pointer-events: none;
+    animation: fall linear forwards;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Ою-сызық */
+  .ornament-row { letter-spacing: .35em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in, .pop, .shake, .confetti-piece { animation: none !important; }
+  }
+</style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- Жоғарғы панель -->
+  <header class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 text-white shadow-xl relative border-b-4 border-amber-500">
+    <div class="h-2.5 bg-amber-400 w-full flex justify-center overflow-hidden">
+      <div class="ornament-row text-emerald-950 text-[11px] font-bold select-none whitespace-nowrap py-0.5">
+        ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞ ✦ ۞
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-4">
+        <div class="bg-gradient-to-br from-amber-300 to-yellow-500 text-emerald-950 w-14 h-14 rounded-2xl font-black text-3xl shadow-lg flex items-center justify-center border-2 border-amber-200 arabic-text transition-transform hover:rotate-6">ع</div>
+        <div>
+          <h1 class="text-2xl font-extrabold tracking-tight flex items-center gap-2">
+            Madrasa Test IQ
+            <span class="text-amber-400 arabic-text text-2xl">الْمَدْرَسَة</span>
+          </h1>
+          <p class="text-xs text-emerald-200">Арабша-қазақша сегіз деңгейлі интеллектуалды сынақ жүйесі</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="bg-emerald-950/80 px-4 py-1.5 rounded-xl text-center min-w-[110px] border border-emerald-700 shadow-inner">
+          <span class="text-[9px] block text-emerald-400 uppercase font-black tracking-widest">Игеру деңгейі</span>
+          <span id="globalProgressText" class="text-base font-black text-amber-400">0%</span>
+        </div>
+        <button onclick="openSettingsModal()" class="bg-amber-500 hover:bg-amber-400 text-emerald-950 px-3.5 py-2.5 rounded-xl shadow-md transition-all border border-amber-300 flex items-center gap-2 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-amber-300">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <span>Баптаулар</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-amber-500 text-emerald-950 px-5 py-1 rounded-full text-[10px] font-extrabold shadow-lg border border-amber-200 tracking-widest z-10 select-none">
+      ۞ АРАБ ТІЛІНІҢ СЫНАҚ ОРТАЛЫҒЫ ۞
+    </div>
+  </header>
+
+  <!-- Негізгі блок -->
+  <main class="flex-grow max-w-7xl mx-auto w-full p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+
+    <!-- Сол жақ: Тараулар -->
+    <section class="lg:col-span-4 flex flex-col gap-4">
+      <div class="bg-white rounded-2xl p-5 shadow-lg border-t-4 border-emerald-700 border-x border-b border-emerald-100">
+        <div class="flex justify-between items-center mb-4 border-b pb-3 border-emerald-50">
+          <h2 class="font-extrabold text-slate-900 text-lg flex items-center gap-2"><span class="text-emerald-700">۩</span> Оқу бағдарламасы</h2>
+          <span class="text-xs bg-emerald-50 text-emerald-700 font-bold px-3 py-1 rounded-full border border-emerald-100">8 тарау</span>
+        </div>
+        <div class="space-y-3" id="chaptersList"></div>
+      </div>
+
+      <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 rounded-2xl p-5 shadow-md relative overflow-hidden">
+        <div class="absolute right-0 bottom-0 opacity-10 text-emerald-800 text-7xl pointer-events-none translate-x-3 translate-y-3 arabic-text">۩</div>
+        <h3 class="font-bold text-emerald-950 mb-1 flex items-center gap-2 text-sm">
+          <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Интерактивті оқулық сөздігі
+        </h3>
+        <p class="text-xs text-emerald-800 mb-4 leading-relaxed" id="dictTeaser">Оқулықтың 120-дан астам сөзін оқып, дауысталуын кез келген уақытта тыңдаңыз.</p>
+        <button onclick="openDictionary()" class="w-full bg-amber-500 hover:bg-amber-400 text-emerald-950 font-extrabold py-2.5 px-4 rounded-xl shadow-md transition-all text-sm flex justify-center items-center gap-2 border-b-2 border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-300">
+          Сөздік қорын ашу
+        </button>
+      </div>
+    </section>
+
+    <!-- Оң жақ: Тест / Сөздік -->
+    <section class="lg:col-span-8 flex flex-col gap-6">
+
+      <!-- Бастапқы экран -->
+      <div id="introScreen" class="bg-white rounded-3xl p-8 shadow-xl border border-emerald-100 flex flex-col items-center text-center justify-center min-h-[550px] relative overflow-hidden">
+        <div class="absolute top-3 left-3 text-emerald-700 opacity-30 text-2xl arabic-text select-none">۞</div>
+        <div class="absolute top-3 right-3 text-emerald-700 opacity-30 text-2xl arabic-text select-none">۞</div>
+        <div class="absolute bottom-3 left-3 text-emerald-700 opacity-30 text-2xl arabic-text select-none">۞</div>
+        <div class="absolute bottom-3 right-3 text-emerald-700 opacity-30 text-2xl arabic-text select-none">۞</div>
+
+        <div class="w-24 h-24 bg-gradient-to-tr from-emerald-50 to-emerald-100 rounded-full flex items-center justify-center mb-6 border border-emerald-200 shadow-md">
+          <span class="arabic-text text-4xl text-emerald-700 font-extrabold">اِقْرَأْ</span>
+        </div>
+        <h2 class="text-3xl font-black text-slate-900 mb-3 tracking-tight">Араб тілінің тест жүйесі</h2>
+        <p class="text-slate-600 max-w-lg mb-8 text-sm leading-relaxed">
+          Қажетті тарауды таңдап, сынақты бастаңыз. Әр деңгейде біліміңізді үш бағыт бойынша тексеретін
+          <strong class="text-emerald-700">32 жаңартылған сұрақ</strong> бар. Келесі тарауды ашу үшін кемінде <strong>80%</strong> дәлдікке жету қажет.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-lg">
+          <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 shadow-sm text-center">
+            <span class="text-emerald-700 font-black block text-2xl">14</span>
+            <span class="text-xs text-slate-500 font-bold">Сөз жаттау</span>
+          </div>
+          <div class="p-4 bg-sky-50 rounded-2xl border border-sky-200 shadow-sm text-center">
+            <span class="text-sky-700 font-black block text-2xl">8</span>
+            <span class="text-xs text-slate-500 font-bold">Сөйлем құрау</span>
+          </div>
+          <div class="p-4 bg-violet-50 rounded-2xl border border-violet-200 shadow-sm text-center">
+            <span class="text-violet-700 font-black block text-2xl">10</span>
+            <span class="text-xs text-slate-500 font-bold">Грамматика</span>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-7">Пернетақта: <kbd class="bg-slate-100 text-slate-600 border border-slate-300">1</kbd>–<kbd class="bg-slate-100 text-slate-600 border border-slate-300">4</kbd> жауап таңдау · <kbd class="bg-slate-100 text-slate-600 border border-slate-300">Enter</kbd> келесі</p>
+      </div>
+
+      <!-- Тест панелі -->
+      <div id="quizScreen" class="hidden bg-white rounded-3xl shadow-xl border border-emerald-100 overflow-hidden">
+        <div class="bg-slate-900 text-white p-5 flex flex-col sm:flex-row justify-between items-center gap-4 border-b-4 border-emerald-600">
+          <div>
+            <span id="quizChapterBadge" class="text-[10px] bg-amber-500 text-slate-950 font-black px-2.5 py-1 rounded uppercase tracking-wider">Тарау 1</span>
+            <h3 id="quizChapterTitle" class="text-lg font-black mt-1 text-slate-100">Негізгі зат есімдер</h3>
+          </div>
+          <div class="flex items-center gap-3">
+            <div id="streakBox" class="bg-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 border border-slate-700 shadow-inner" title="Қатарынан дұрыс жауап">
+              <span class="text-amber-400">🔥</span>
+              <span id="streakText" class="text-xs font-black text-amber-400 select-none">0</span>
+            </div>
+            <div class="bg-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-2 border border-slate-700 shadow-inner">
+              <span class="text-[10px] text-slate-400 font-bold select-none hidden sm:inline">Қаріп</span>
+              <button onclick="changeFontSize(-0.15)" class="bg-slate-700 hover:bg-slate-600 px-3 py-0.5 rounded font-black text-xs transition-all select-none">−</button>
+              <span id="fontSizeDisplay" class="text-xs font-bold text-amber-400 select-none w-9 text-center">100%</span>
+              <button onclick="changeFontSize(0.15)" class="bg-slate-700 hover:bg-slate-600 px-3 py-0.5 rounded font-black text-xs transition-all select-none">+</button>
+            </div>
+            <button onclick="exitQuiz()" class="text-slate-400 hover:text-white transition-all bg-slate-800 p-2 rounded-xl" title="Шығу">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-slate-100 h-2 w-full">
+          <div id="quizProgressBar" class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-2 transition-all duration-300" style="width:0%"></div>
+        </div>
+
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-6">
+            <span class="text-xs text-slate-600 font-bold bg-slate-100 px-3.5 py-1.5 rounded-full" id="questionCounter">Сұрақ: 1 / 32</span>
+            <span id="questionTypeBadge" class="text-xs font-black px-3 py-1.5 rounded-full">Сөз жаттау</span>
+          </div>
+
+          <div id="questionBlock" class="mb-8">
+            <div id="questionImageContainer" class="hidden justify-center mb-6 bg-emerald-50 p-6 rounded-2xl border-2 border-dashed border-emerald-200 max-w-xs mx-auto shadow-sm"></div>
+            <h4 id="questionText" class="kz-question font-black text-slate-800 mb-2 text-center"></h4>
+            <div id="arabicQuestionContainer" class="hidden text-center my-6">
+              <span id="arabicWordText" class="arabic-text ar-hero font-bold text-emerald-950 bg-gradient-to-b from-emerald-50 to-white px-10 py-5 rounded-3xl border-2 border-emerald-200 inline-block shadow-md transition-all max-w-full break-words"></span>
+            </div>
+          </div>
+
+          <div id="optionsContainer" class="space-y-3"></div>
+
+          <!-- Сөйлем құрастырғыш -->
+          <div id="sentenceBuilderContainer" class="hidden space-y-5">
+            <div class="min-h-[120px] p-4 bg-emerald-50 border-2 border-dashed border-emerald-200 rounded-3xl flex flex-wrap gap-2.5 justify-center items-center shadow-inner" id="sentenceDropzone"></div>
+            <div class="flex flex-wrap gap-2.5 justify-center p-3 bg-stone-50 rounded-2xl border border-stone-200 min-h-[64px]" id="sentenceWordsPool"></div>
+            <div class="flex justify-between items-center pt-1">
+              <p class="text-[11px] text-slate-400">Реті оңнан солға қарай оқылады</p>
+              <button onclick="checkSentenceConstruction()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-3 px-7 rounded-xl transition-all shadow-md text-sm border-b-2 border-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-400">
+                Жауапты тексеру ←
+              </button>
+            </div>
+          </div>
+
+          <!-- Түсіндірме -->
+          <div id="explanationContainer" class="hidden mt-8 p-5 rounded-2xl border-2 transition-all">
+            <div class="flex items-start gap-4">
+              <div id="explanationIcon" class="p-3 rounded-xl text-white shadow-md shrink-0"></div>
+              <div class="flex-grow">
+                <h5 id="explanationTitle" class="font-extrabold text-sm"></h5>
+                <p id="explanationText" class="kz-text text-slate-700 mt-2 leading-relaxed"></p>
+              </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+              <button onclick="nextQuestion()" class="bg-slate-900 hover:bg-slate-800 text-white font-black py-3 px-8 rounded-xl text-xs transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-slate-400">
+                Келесі сұрақ → <span class="opacity-60 font-bold ml-1">Enter</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Нәтиже экраны -->
+      <div id="resultScreen" class="hidden bg-white rounded-3xl p-8 shadow-xl border border-emerald-100 text-center flex flex-col items-center">
+        <div id="resultBadge" class="w-20 h-20 rounded-full flex items-center justify-center mb-6 border"></div>
+        <h3 id="resultTitle" class="text-3xl font-black text-slate-900 mb-1">Тарау аяқталды!</h3>
+        <p class="text-xs text-slate-500 mb-6">Сынақ қорытындысы бойынша көрсеткішіңіз</p>
+        <div class="grid grid-cols-3 gap-4 w-full max-w-sm mb-8">
+          <div class="p-3 bg-stone-50 rounded-xl border border-stone-200">
+            <span class="text-[9px] block text-slate-400 font-bold uppercase">Сұрақ</span>
+            <span id="resultTotalQuestions" class="text-lg font-black text-slate-800">32</span>
+          </div>
+          <div class="p-3 bg-stone-50 rounded-xl border border-stone-200">
+            <span class="text-[9px] block text-slate-400 font-bold uppercase">Дұрыс</span>
+            <span id="resultCorrectCount" class="text-lg font-black text-emerald-600">0</span>
+          </div>
+          <div class="p-3 bg-stone-50 rounded-xl border border-stone-200">
+            <span class="text-[9px] block text-slate-400 font-bold uppercase">Пайыз</span>
+            <span id="resultScorePercent" class="text-lg font-black text-amber-500">0%</span>
+          </div>
+        </div>
+        <div id="resultStatusAlert" class="w-full max-w-sm p-4 rounded-xl mb-8 border text-sm text-left leading-relaxed"></div>
+        <div class="flex flex-wrap justify-center gap-4">
+          <button onclick="restartCurrentQuiz()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 px-7 rounded-xl text-sm transition-all border border-slate-300">Қайта тапсыру</button>
+          <button id="nextChapterBtn" onclick="goToNextChapterFromResults()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-3 px-7 rounded-xl text-sm transition-all shadow-md border-b-2 border-emerald-900">Келесі тарау →</button>
+        </div>
+      </div>
+
+      <!-- Сөздік экраны -->
+      <div id="dictionaryScreen" class="hidden bg-white rounded-3xl shadow-xl border border-emerald-100 overflow-hidden">
+        <div class="bg-amber-500 text-slate-950 p-5 flex justify-between items-center border-b-4 border-amber-600">
+          <div>
+            <h3 class="text-lg font-black flex items-center gap-2"><span class="arabic-text">۩</span> Сөздік базасы</h3>
+            <p class="text-xs text-slate-900 mt-0.5" id="dictHeaderCount">Оқулықта қамтылған негізгі сөздер мен тіркестер</p>
+          </div>
+          <button onclick="closeDictionary()" class="text-amber-50 hover:text-white transition-all bg-amber-600 p-2 rounded-xl">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div class="p-6">
+          <div class="flex flex-col sm:flex-row gap-3 mb-5">
+            <div class="relative flex-grow">
+              <input type="text" id="dictSearch" oninput="filterDictionary()" placeholder="Сөзді қазақша немесе арабша іздеу..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-stone-50">
+              <svg class="w-5 h-5 text-slate-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <select id="dictChapterFilter" onchange="filterDictionary()" class="px-3 py-3 rounded-xl border border-slate-200 bg-stone-50 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <option value="0">Барлық тараулар</option>
+              <option value="1">Тарау 1</option><option value="2">Тарау 2</option>
+              <option value="3">Тарау 3</option><option value="4">Тарау 4</option>
+              <option value="5">Тарау 5</option><option value="6">Тарау 6</option>
+              <option value="7">Тарау 7</option><option value="8">Тарау 8</option>
+            </select>
+          </div>
+          <p id="dictEmptyMsg" class="hidden text-center text-sm text-slate-400 py-10">Іздеу нәтижесі табылмады.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[480px] overflow-y-auto pr-2" id="dictionaryWordsGrid"></div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Баптаулар модалі -->
+  <div id="settingsModal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-t-4 border-emerald-600 relative pop">
+      <button onclick="closeSettingsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 p-2 rounded-xl">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+      <h3 class="font-black text-xl text-slate-900 mb-5 flex items-center gap-2"><span class="text-emerald-600">⚙</span> Жалпы баптаулар</h3>
+
+      <div class="space-y-4">
+        <div class="flex justify-between items-center p-3 bg-stone-50 rounded-2xl border border-stone-200">
+          <div><h4 class="font-extrabold text-sm text-slate-800">Кезеңдерді бұғаттау</h4><p class="text-[10px] text-slate-500 leading-normal">80%-ға жетпей келесі тарауды ашпайды</p></div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="modalLockToggle" class="sr-only peer" onchange="toggleLocking()">
+            <div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+          </label>
+        </div>
+
+        <div class="flex justify-between items-center p-3 bg-stone-50 rounded-2xl border border-stone-200">
+          <div><h4 class="font-extrabold text-sm text-slate-800">Дыбыстық белгілер</h4><p class="text-[10px] text-slate-500 leading-normal">Дұрыс/қате жауапқа дыбыс</p></div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="soundToggle" class="sr-only peer" onchange="toggleSound()">
+            <div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+          </label>
+        </div>
+
+        <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200">
+          <div class="flex justify-between items-center mb-2"><h4 class="font-extrabold text-sm text-slate-800">Дыбысталу жылдамдығы</h4><span id="speedValText" class="text-xs bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded font-black">1.0x</span></div>
+          <input type="range" id="speechSpeedSlider" min="0.5" max="1.5" step="0.1" value="1.0" oninput="changeSpeechSpeed(this.value)" class="w-full accent-emerald-600 cursor-pointer">
+        </div>
+
+        <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200">
+          <h4 class="font-extrabold text-sm text-slate-800 mb-1">Мәтін өлшемі</h4>
+          <p class="text-[10px] text-slate-500 leading-normal mb-3">Араб әріптерін де, қазақша сөздерді де қатар үлкейтеді/кішірейтеді</p>
+          <div class="flex justify-center items-center gap-4">
+            <button onclick="changeFontSize(-0.15)" class="bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl font-black text-sm transition-all shadow-sm border border-slate-300 select-none">− Кішірейту</button>
+            <span id="modalFontSizeDisplay" class="text-sm font-extrabold text-emerald-800 bg-white border border-slate-200 px-4 py-2 rounded-xl select-none w-16 text-center">100%</span>
+            <button onclick="changeFontSize(0.15)" class="bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl font-black text-sm transition-all shadow-sm border border-slate-300 select-none">+ Үлкейту</button>
+          </div>
+        </div>
+
+        <div class="p-3 bg-rose-50 rounded-2xl border border-rose-200 flex justify-between items-center">
+          <div><h4 class="font-extrabold text-sm text-rose-900">Мәліметтерді өшіру</h4><p class="text-[10px] text-rose-500">Барлық деңгейлердегі прогресті нөлдейді</p></div>
+          <button onclick="confirmResetProgress()" class="bg-rose-600 hover:bg-rose-700 text-white font-extrabold px-3 py-2 rounded-xl text-xs transition-all shadow-md">Нөлдеу</button>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <button onclick="closeSettingsModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3 px-4 rounded-xl text-sm shadow-md transition-all">Сақтау және жабу</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ескерту модалі -->
+  <div id="customAlert" class="hidden fixed inset-0 bg-slate-950/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl text-center border-t-4 border-amber-500 pop">
+      <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" id="alertIconBox"></div>
+      <h4 class="font-extrabold text-slate-900 text-lg mb-2" id="alertTitle">Ескерту!</h4>
+      <p class="text-xs text-slate-600 mb-6 leading-relaxed" id="alertMessage"></p>
+      <button onclick="closeAlert()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3 px-4 rounded-xl text-sm transition-all shadow-md">Түсіндім</button>
+    </div>
+  </div>
+
+  <footer class="bg-emerald-950 text-emerald-200/70 text-center py-6 border-t border-emerald-900 text-xs mt-12">
+    <div class="max-w-7xl mx-auto px-4"><p>© 2026 Madrasa Test IQ — арабша-қазақша интеллектуалды тест жүйесі.</p></div>
+  </footer>
+
+<script>
+  // ===== Қауіпсіз сақтау қабаты =====
+  const safeStorage = {
+    getItem(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+    setItem(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+  };
+
+  const isArabic = s => /[\u0600-\u06FF]/.test(s);
+
+  // ===== Сөздік (≈120 сөз) =====
+  const dictionary = [
+    // 1-тарау
+    { id:1, chapter:1, arabic:"بَيْتٌ", kazakh:"үй", transcription:"бәйтун", image:"house" },
+    { id:2, chapter:1, arabic:"قَلَمٌ", kazakh:"қалам", transcription:"қоламун", image:"pen" },
+    { id:3, chapter:1, arabic:"كِتَابٌ", kazakh:"кітап", transcription:"китәәбун", image:"book" },
+    { id:4, chapter:1, arabic:"بَابٌ", kazakh:"есік", transcription:"бәәбун", image:"door" },
+    { id:5, chapter:1, arabic:"مِفْتَاحٌ", kazakh:"кілт", transcription:"мифтәәхун", image:"key" },
+    { id:6, chapter:1, arabic:"مَكْتَبٌ", kazakh:"жазу үстелі", transcription:"мәктабун" },
+    { id:7, chapter:1, arabic:"سَرِيرٌ", kazakh:"төсек", transcription:"сариирун" },
+    { id:8, chapter:1, arabic:"كُرْسِيٌّ", kazakh:"орындық", transcription:"курсиййун" },
+    { id:9, chapter:1, arabic:"نَجْمٌ", kazakh:"жұлдыз", transcription:"наджмун" },
+    { id:10, chapter:1, arabic:"قَمِيصٌ", kazakh:"жейде", transcription:"қомиисун" },
+    { id:11, chapter:1, arabic:"مَسْجِدٌ", kazakh:"мешіт", transcription:"мәсджидун" },
+    { id:12, chapter:1, arabic:"رَجُلٌ", kazakh:"ер адам", transcription:"роджулун" },
+    { id:13, chapter:1, arabic:"وَلَدٌ", kazakh:"бала", transcription:"уәләдун" },
+    { id:14, chapter:1, arabic:"طَالِبٌ", kazakh:"студент", transcription:"тоолибун" },
+    { id:15, chapter:1, arabic:"تَاجِرٌ", kazakh:"саудагер", transcription:"тәәджирун" },
+    { id:16, chapter:1, arabic:"شَمْسٌ", kazakh:"күн (аспандағы)", transcription:"шәмсун", image:"sun" },
+    { id:17, chapter:1, arabic:"قَمَرٌ", kazakh:"ай", transcription:"қомарун", image:"moon" },
+    { id:18, chapter:1, arabic:"شَجَرَةٌ", kazakh:"ағаш", transcription:"шәджаратун", image:"tree" },
+    { id:19, chapter:1, arabic:"سَاعَةٌ", kazakh:"сағат", transcription:"сәә'атун", image:"clock" },
+    { id:20, chapter:1, arabic:"جَبَلٌ", kazakh:"тау", transcription:"джәбәлун", image:"mountain" },
+    { id:21, chapter:1, arabic:"بَحْرٌ", kazakh:"теңіз", transcription:"бахрун" },
+    { id:22, chapter:1, arabic:"نَهْرٌ", kazakh:"өзен", transcription:"нәһрун" },
+
+    // 2-тарау
+    { id:23, chapter:2, arabic:"هَذَا", kazakh:"бұл (ер жынысы)", transcription:"хәәзәә" },
+    { id:24, chapter:2, arabic:"هَذِهِ", kazakh:"бұл (әйел жынысы)", transcription:"хәәзиһи" },
+    { id:25, chapter:2, arabic:"ذَلِكَ", kazakh:"анау (ер жынысы)", transcription:"зәәликә" },
+    { id:26, chapter:2, arabic:"تِلْكَ", kazakh:"анау (әйел жынысы)", transcription:"тилькә" },
+    { id:27, chapter:2, arabic:"مَنْ", kazakh:"кім?", transcription:"мән" },
+    { id:28, chapter:2, arabic:"مَا", kazakh:"не?", transcription:"мәә" },
+    { id:29, chapter:2, arabic:"هَلْ", kazakh:"ма?/ме? (сұраулық)", transcription:"һәл" },
+    { id:30, chapter:2, arabic:"نَعَمْ", kazakh:"иә", transcription:"нә'ам" },
+    { id:31, chapter:2, arabic:"لَا", kazakh:"жоқ", transcription:"ләә" },
+    { id:32, chapter:2, arabic:"مَاءٌ", kazakh:"су", transcription:"мәә'ун", image:"water" },
+    { id:33, chapter:2, arabic:"حَجَرٌ", kazakh:"тас", transcription:"хаджарун" },
+    { id:34, chapter:2, arabic:"لَبَنٌ", kazakh:"сүт", transcription:"ләбәнун" },
+    { id:35, chapter:2, arabic:"سُكَّرٌ", kazakh:"қант", transcription:"суккарун" },
+    { id:36, chapter:2, arabic:"إِمَامٌ", kazakh:"имам", transcription:"имәәмун" },
+    { id:37, chapter:2, arabic:"قِطٌّ", kazakh:"мысық", transcription:"қиттун" },
+    { id:38, chapter:2, arabic:"دِيكٌ", kazakh:"әтеш", transcription:"диикун" },
+    { id:39, chapter:2, arabic:"دَجَاجَةٌ", kazakh:"тауық", transcription:"дәджәәджәтун" },
+
+    // 3-тарау
+    { id:40, chapter:3, arabic:"الْكِتَابُ", kazakh:"кітап (белгілі)", transcription:"әль-китәәбу" },
+    { id:41, chapter:3, arabic:"الْقَلَمُ", kazakh:"қалам (белгілі)", transcription:"әль-қоламу" },
+    { id:42, chapter:3, arabic:"الْبَابُ", kazakh:"есік (белгілі)", transcription:"әль-бәәбу" },
+    { id:43, chapter:3, arabic:"الْوَلَدُ", kazakh:"бала (белгілі)", transcription:"әль-уәләду" },
+    { id:44, chapter:3, arabic:"الْحِمَارُ", kazakh:"есек (белгілі)", transcription:"әль-химәәру" },
+    { id:45, chapter:3, arabic:"الْحِصَانُ", kazakh:"ат (белгілі)", transcription:"әль-хисоону" },
+    { id:46, chapter:3, arabic:"الْجَمَلُ", kazakh:"түйе (белгілі)", transcription:"әль-джәмәлу" },
+    { id:47, chapter:3, arabic:"الْكَلْبُ", kazakh:"ит (белгілі)", transcription:"әль-кәлбу" },
+    { id:48, chapter:3, arabic:"الْخُبْزُ", kazakh:"нан (белгілі)", transcription:"әль-хубзу" },
+    { id:49, chapter:3, arabic:"الْعَيْنُ", kazakh:"көз (белгілі)", transcription:"әль-'айну" },
+    { id:50, chapter:3, arabic:"الشَّمْسُ", kazakh:"күн (белгілі)", transcription:"әш-шәмсу" },
+    { id:51, chapter:3, arabic:"الْقَمَرُ", kazakh:"ай (белгілі)", transcription:"әль-қомару" },
+    { id:52, chapter:3, arabic:"الْمَاءُ", kazakh:"су (белгілі)", transcription:"әль-мәә'у" },
+
+    // 4-тарау
+    { id:53, chapter:4, arabic:"أَنَا", kazakh:"мен", transcription:"әнә" },
+    { id:54, chapter:4, arabic:"أَنْتَ", kazakh:"сен (ер адам)", transcription:"әнтә" },
+    { id:55, chapter:4, arabic:"أَنْتِ", kazakh:"сен (әйел адам)", transcription:"әнти" },
+    { id:56, chapter:4, arabic:"هُوَ", kazakh:"ол (ер адам)", transcription:"һууә" },
+    { id:57, chapter:4, arabic:"هِيَ", kazakh:"ол (әйел адам)", transcription:"һийә" },
+    { id:58, chapter:4, arabic:"نَحْنُ", kazakh:"біз", transcription:"нахну" },
+    { id:59, chapter:4, arabic:"أَنْتُمْ", kazakh:"сендер (ерлер)", transcription:"әнтум" },
+    { id:60, chapter:4, arabic:"أَنْتُنَّ", kazakh:"сендер (әйелдер)", transcription:"әнтуннә" },
+    { id:61, chapter:4, arabic:"هُمْ", kazakh:"олар (ерлер)", transcription:"һум" },
+    { id:62, chapter:4, arabic:"هُنَّ", kazakh:"олар (әйелдер)", transcription:"һуннә" },
+    { id:63, chapter:4, arabic:"هُمَا", kazakh:"олар екеуі", transcription:"һумәә" },
+    { id:64, chapter:4, arabic:"أَنْتُمَا", kazakh:"сендер екеуің", transcription:"әнтумәә" },
+
+    // 5-тарау
+    { id:65, chapter:5, arabic:"كَبِيرٌ", kazakh:"үлкен", transcription:"кәбиирун" },
+    { id:66, chapter:5, arabic:"صَغِيرٌ", kazakh:"кішкентай", transcription:"соғиирун" },
+    { id:67, chapter:5, arabic:"جَمِيلٌ", kazakh:"әдемі", transcription:"джәмиилун" },
+    { id:68, chapter:5, arabic:"جَدِيدٌ", kazakh:"жаңа", transcription:"джәдиидун" },
+    { id:69, chapter:5, arabic:"قَدِيمٌ", kazakh:"ескі", transcription:"қодиимун" },
+    { id:70, chapter:5, arabic:"وَاسِعٌ", kazakh:"кең", transcription:"уәәси'ун" },
+    { id:71, chapter:5, arabic:"نَظِيفٌ", kazakh:"таза", transcription:"назиифун" },
+    { id:72, chapter:5, arabic:"وَسِخٌ", kazakh:"лас", transcription:"уәсихун" },
+    { id:73, chapter:5, arabic:"حَارٌّ", kazakh:"ыстық", transcription:"хааррун" },
+    { id:74, chapter:5, arabic:"بَارِدٌ", kazakh:"суық", transcription:"бәәридун" },
+    { id:75, chapter:5, arabic:"طَوِيلٌ", kazakh:"ұзын / бойшаң", transcription:"тоуиилун" },
+    { id:76, chapter:5, arabic:"قَصِيرٌ", kazakh:"қысқа", transcription:"қосиирун" },
+    { id:77, chapter:5, arabic:"غَنِيٌّ", kazakh:"бай", transcription:"ғониййун" },
+    { id:78, chapter:5, arabic:"فَقِيرٌ", kazakh:"кедей", transcription:"фақиирун" },
+    { id:79, chapter:5, arabic:"سَهْلٌ", kazakh:"оңай", transcription:"сәһлун" },
+    { id:80, chapter:5, arabic:"صَعْبٌ", kazakh:"қиын", transcription:"со'бун" },
+
+    // 6-тарау
+    { id:81, chapter:6, arabic:"فِي", kazakh:"ішінде", transcription:"фии" },
+    { id:82, chapter:6, arabic:"عَلَى", kazakh:"үстінде", transcription:"'аләә" },
+    { id:83, chapter:6, arabic:"إِلَى", kazakh:"қарай (бағыт)", transcription:"иләә" },
+    { id:84, chapter:6, arabic:"مِنْ", kazakh:"бастап / -дан", transcription:"мин" },
+    { id:85, chapter:6, arabic:"أَيْنَ", kazakh:"қайда?", transcription:"әйнә" },
+    { id:86, chapter:6, arabic:"أَمَامَ", kazakh:"алдында", transcription:"әмәәмә" },
+    { id:87, chapter:6, arabic:"خَلْفَ", kazakh:"артында", transcription:"хальфә" },
+    { id:88, chapter:6, arabic:"الْغُرْفَةُ", kazakh:"бөлме", transcription:"әль-ғурфату" },
+    { id:89, chapter:6, arabic:"الْحَمَّامُ", kazakh:"жуынатын бөлме", transcription:"әль-хаммааму" },
+    { id:90, chapter:6, arabic:"الْمَطْبَخُ", kazakh:"асүй", transcription:"әль-матбаху" },
+    { id:91, chapter:6, arabic:"السَّمَاءُ", kazakh:"аспан", transcription:"әс-сәмәә'у" },
+    { id:92, chapter:6, arabic:"الْفَصْلُ", kazakh:"сынып", transcription:"әль-фаслу" },
+    { id:93, chapter:6, arabic:"الْمَكْتَبَةُ", kazakh:"кітапхана", transcription:"әль-мәктабату" },
+
+    // 7-тарау
+    { id:94, chapter:7, arabic:"كِتَابُ مُحَمَّدٍ", kazakh:"Мұхаммедтің кітабы", transcription:"китәәбу мухаммәдин" },
+    { id:95, chapter:7, arabic:"قَلَمُ حَامِدٍ", kazakh:"Хамидтің қаламы", transcription:"қоламу хәәмидин" },
+    { id:96, chapter:7, arabic:"مِفْتَاحُ الْبَيْتِ", kazakh:"үйдің кілті", transcription:"мифтәәхуль бәйти" },
+    { id:97, chapter:7, arabic:"سَيَّارَةُ الْمُدَرِّسِ", kazakh:"мұғалімнің көлігі", transcription:"сәййәәратуль мудәрриси", image:"car" },
+    { id:98, chapter:7, arabic:"حَقِيبَةُ الطَّالِبِ", kazakh:"студенттің сөмкесі", transcription:"хақиибатут тоолиби", image:"bag" },
+    { id:99, chapter:7, arabic:"اِبْنُ الْإِمَامِ", kazakh:"имамның ұлы", transcription:"ибнуль имәәми" },
+    { id:100, chapter:7, arabic:"بِنْتُ الطَّبِيبِ", kazakh:"дәрігердің қызы", transcription:"бинтут тобииби" },
+    { id:101, chapter:7, arabic:"اسْمُ الْوَلَدِ", kazakh:"баланың есімі", transcription:"исмуль уәләди" },
+    { id:102, chapter:7, arabic:"دَفْتَرُ سَعِيدٍ", kazakh:"Саидтің дәптері", transcription:"дәфтару сә'иидин" },
+    { id:103, chapter:7, arabic:"بَابُ الْمَسْجِدِ", kazakh:"мешіттің есігі", transcription:"бәәбуль мәсджиди" },
+    { id:104, chapter:7, arabic:"لَوْنُ السَّمَاءِ", kazakh:"аспанның түсі", transcription:"ләуну с-сәмәә'и" },
+    { id:105, chapter:7, arabic:"تَحْتَ", kazakh:"астында", transcription:"тахтә" },
+
+    // 8-тарау
+    { id:106, chapter:8, arabic:"ذَهَبَ", kazakh:"барды", transcription:"зәһәбә" },
+    { id:107, chapter:8, arabic:"خَرَجَ", kazakh:"шықты", transcription:"хороджә" },
+    { id:108, chapter:8, arabic:"جَلَسَ", kazakh:"отырды", transcription:"джәләсә" },
+    { id:109, chapter:8, arabic:"كَتَبَ", kazakh:"жазды", transcription:"кәтәбә" },
+    { id:110, chapter:8, arabic:"قَرَأَ", kazakh:"оқыды", transcription:"қоро'а" },
+    { id:111, chapter:8, arabic:"دَخَلَ", kazakh:"кірді", transcription:"дәхалә" },
+    { id:112, chapter:8, arabic:"أَكَلَ", kazakh:"жеді", transcription:"әкәлә" },
+    { id:113, chapter:8, arabic:"شَرِبَ", kazakh:"ішті", transcription:"шәрибә" },
+    { id:114, chapter:8, arabic:"فَتَحَ", kazakh:"ашты", transcription:"фәтәха" },
+    { id:115, chapter:8, arabic:"سَمِعَ", kazakh:"естіді", transcription:"сәми'а" },
+    { id:116, chapter:8, arabic:"نَظَرَ", kazakh:"қарады", transcription:"назора" },
+    { id:117, chapter:8, arabic:"فَهِمَ", kazakh:"түсінді", transcription:"фәһимә" },
+    { id:118, chapter:8, arabic:"عَمِلَ", kazakh:"жұмыс істеді", transcription:"'амилә" },
+    { id:119, chapter:8, arabic:"السَّلَامُ عَلَيْكُمْ", kazakh:"ассалаумағалейкум", transcription:"әс-сәләәму 'аләйкум" },
+    { id:120, chapter:8, arabic:"مَعَ السَّلَامَةِ", kazakh:"сау болыңыз", transcription:"ма'а с-сәләәмәһ" }
+  ];
+
+  const chapters = [
+    { id:1, title:"Негізгі зат есімдер", desc:"Тұрмыстық заттар мен қоршаған ортаға қатысты арабша зат есімдер және танвин харакаты." },
+    { id:2, title:"Сілтеу есімдіктері", desc:"Жақын және алыс заттарды көрсететін сілтеу белгілері мен сұраулық сөздер." },
+    { id:3, title:"Белгілілік (Алиф-Лам)", desc:"«ال» арқылы белгілі есім жасау және танвиннің жойылу ережелері." },
+    { id:4, title:"Жіктеу есімдіктері", desc:"Жекеше, қостық және көпше жіктеу есімдіктері мен олардың қазақша баламалары." },
+    { id:5, title:"Сын есім және сапа", desc:"Заттарды сын есіммен сипаттау және оларды жыныс бойынша сәйкестендіру." },
+    { id:6, title:"Септік предлогтары", desc:"Хуруф әл-Джар көмекші сөздері және сөз соңын касраға өзгерту ережесі." },
+    { id:7, title:"Иелік құрылымы (Идафа)", desc:"Заттың кімге тиесілі екенін білдіретін иелік тіркестері мен олардың харакаттары." },
+    { id:8, title:"Етістік және диалог", desc:"Өткен шақ етістіктері және күнделікті диалогта қолданылатын сөйлесім үлгілері." }
+  ];
+
+  // ===== Сөйлем құрау үлгілері (тарауларға таңбаланған) =====
+  const sentenceTemplates = [
+    { ch:[2], words:["هَذَا","بَيْتٌ"], translation:"Бұл — үй", explain:"Сөйлем сілтеу есімдігінен (هَذَا) басталып, одан кейін зат есім (بَيْتٌ) келеді. Етістік қажет емес — бұл атаулы (исмия) сөйлем." },
+    { ch:[2], words:["هَذِهِ","سَيَّارَةٌ"], translation:"Бұл — көлік", explain:"«سَيَّارَةٌ» сөзі та-марбутамен (ة) аяқталғандықтан әйел жынысына жатады, сондықтан «هَذِهِ» қолданылады." },
+    { ch:[2,5], words:["هَذَا","بَيْتٌ","جَمِيلٌ"], translation:"Бұл — әдемі үй", explain:"Реті: сілтеу есімдігі (هَذَا) → сипатталушы зат есім (بَيْتٌ) → сын есім (جَمِيلٌ)." },
+    { ch:[5], words:["الْبَيْتُ","كَبِيرٌ"], translation:"Үй үлкен", explain:"Бастауыш белгілі (الْبَيْتُ), баяндауыш белгісіз (كَبِيرٌ) болғанда толық хабарлы сөйлем құралады." },
+    { ch:[3,5], words:["هَذَا","الْبَيْتُ","كَبِيرٌ"], translation:"Бұл үй үлкен", explain:"Сілтеу есімдігінен кейінгі зат есім «ال» арқылы белгілі болса (الْبَيْتُ), одан соңғы белгісіз сөз баяндауыш болады." },
+    { ch:[6], words:["الْقَلَمُ","عَلَى","الْمَكْتَبِ"], translation:"Қалам үстелдің үстінде", explain:"«عَلَى» предлогы өзінен кейінгі сөздің соңын касраға (ِ) өзгертеді: الْمَكْتَبِ." },
+    { ch:[6], words:["الْكِتَابُ","فِي","الْحَقِيبَةِ"], translation:"Кітап сөмкенің ішінде", explain:"«فِي» предлогынан кейінгі сөз әрқашан касрамен аяқталады: الْحَقِيبَةِ." },
+    { ch:[6], words:["الْوَلَدُ","فِي","الْغُرْفَةِ"], translation:"Бала бөлмеде", explain:"Орынды білдіретін предлог «فِي» зат есімнің соңын касраға (الْغُرْفَةِ) ауыстырады." },
+    { ch:[8,6], words:["ذَهَبَ","الطَّالِبُ","إِلَى","الْمَدْرَسَةِ"], translation:"Студент мектепке барды", explain:"Етістікті сөйлем етістіктен (ذَهَبَ) басталады; «إِلَى» бағыт предлогы соңғы сөзді касраға өзгертеді." },
+    { ch:[8,6], words:["خَرَجَ","الرَّجُلُ","مِنَ","الْبَيْتِ"], translation:"Ер адам үйден шықты", explain:"«مِنْ» предлогы дауысты дыбыс алдында «مِنَ» болады; одан кейінгі сөз касрамен аяқталады." },
+    { ch:[4], words:["أَنَا","طَالِبٌ"], translation:"Мен студентпін", explain:"Жіктеу есімдігі (أَنَا) бастауыш, белгісіз зат есім (طَالِبٌ) баяндауыш қызметін атқарады." },
+    { ch:[4], words:["هُوَ","مُدَرِّسٌ"], translation:"Ол — мұғалім", explain:"«هُوَ» — ер жынысты жіктеу есімдігі; атаулы сөйлемде етістіксіз қолданылады." },
+    { ch:[7,5], words:["كِتَابُ","مُحَمَّدٍ","جَدِيدٌ"], translation:"Мұхаммедтің кітабы жаңа", explain:"Идафа тіркесі (كِتَابُ مُحَمَّدٍ) бастауыш болып, сын есім (جَدِيدٌ) баяндауыш болады. Идафаның екінші мүшесі касрамен аяқталады." },
+    { ch:[7,5], words:["مِفْتَاحُ","الْبَيْتِ","صَغِيرٌ"], translation:"Үйдің кілті кішкентай", explain:"Бірінші мүше (مِفْتَاحُ) танвинсіз және артикльсіз; екінші мүше (الْبَيْتِ) касрамен жазылады." }
+  ];
+
+  // ===== Грамматика сұрақтары (тарауларға таңбаланған) =====
+  const grammarRules = [
+    { ch:[1], text:"Арабшада жалғыз тұрған белгісіз зат есімнің соңындағы қос сызықша (ٌ ـ ٍ ـ ً) қалай аталады?", options:["Танвин","Сукун","Шадда","Мадда"], correct:"Танвин", explain:"Танвин — белгісіздіктің белгісі; сөз соңында «ун», «ин», «ан» дыбыстарын береді (мысалы: بَيْتٌ — бәйтун)." },
+    { ch:[1], text:"Қысқа дауысты дыбыстарды (фатха, касра, дамма) бір сөзбен қалай атайды?", options:["Харакат","Хуруф","Идафа","Танвин"], correct:"Харакат", explain:"Харакат — әріп үстіне немесе астына қойылатын қысқа дауысты белгілер: фатха (а), касра (и), дамма (у)." },
+    { ch:[1], text:"Әріптің ешбір дауыссыз оқылатынын (дауыстысы жоқ екенін) білдіретін шеңбер тәріздес белгі қалай аталады?", options:["Сукун (ْ)","Фатха (َ)","Дамма (ُ)","Шадда (ّ)"], correct:"Сукун (ْ)", explain:"Сукун (ْ) — әріптің дауыссыз, «тыныш» оқылатынын көрсетеді." },
+    { ch:[2], text:"«هَذَا» сілтеу есімдігі қандай заттарға қолданылады?", options:["Жақын тұрған ер жынысты затқа","Алыс тұрған әйел жынысты затқа","Тек көпше түрге","Тек сұраққа"], correct:"Жақын тұрған ер жынысты затқа", explain:"«هَذَا» — жақындағы ер жынысты (музаккар) затқа; әйел жынысына «هَذِهِ» қолданылады." },
+    { ch:[2], text:"«مَنْ» және «مَا» сұраулық есімдіктерінің айырмашылығы қандай?", options:["«مَنْ» — кім (жанды), «مَا» — не (жансыз)","Екеуі де «не» дегенді білдіреді","«مَنْ» — қайда, «مَا» — қашан","Айырмашылығы жоқ"], correct:"«مَنْ» — кім (жанды), «مَا» — не (жансыз)", explain:"«مَنْ» ақыл-парасат иелері (адам) туралы, «مَا» жансыз заттар туралы сұрағанда қолданылады." },
+    { ch:[2], text:"Сөйлемді жалпы сұраққа (иә/жоқ) айналдыру үшін басына қойылатын сөз қайсы?", options:["هَلْ","فِي","عَلَى","مِنْ"], correct:"هَلْ", explain:"«هَلْ» — атаулы немесе етістікті сөйлемнің басына қойылатын жалпы сұраулық сөз: هَلْ هَذَا بَيْتٌ؟" },
+    { ch:[3], text:"Сөзге «ال» (Алиф-Лам) жалғанғанда қай белгі мүлдем жазылмайды?", options:["Танвин","Фатха","Касра","Сукун"], correct:"Танвин", explain:"«ال» мен танвин бір сөзде ешқашан қатар тұрмайды: بَيْتٌ → الْبَيْتُ." },
+    { ch:[3], text:"«ال» жалғанған сөз қалай аталады?", options:["Маʼрифа (белгілі)","Накира (белгісіз)","Идафа","Мудаф"], correct:"Маʼрифа (белгілі)", explain:"«ال» сөзді белгілі (маʼрифа) етеді — тыңдаушыға таныс, нақты затты білдіреді." },
+    { ch:[5], text:"Сөз соңындағы дөңгелек жазылатын та-марбута (ة) әдетте нені білдіреді?", options:["Әйел жынысын (муаннас)","Көпше түрді","Етістікті","Белгілілікті"], correct:"Әйел жынысын (муаннас)", explain:"Та-марбута (ة) сөздің әйел жынысты (муаннас) екенін көрсетеді: سَيَّارَةٌ، مُدَرِّسَةٌ." },
+    { ch:[5], text:"Сын есім өзі сипаттайтын зат есіммен неде үйлесуі тиіс?", options:["Жыныс пен белгілілікте","Тек санда","Тек дыбыста","Ешнәрседе"], correct:"Жыныс пен белгілілікте", explain:"Сын есім (сифат) зат есіммен жынысы (ер/әйел) және белгілілігі (ал бар/жоқ) жағынан сәйкес келеді." },
+    { ch:[6], text:"«فِي» (ішінде), «عَلَى» (үстінде) предлогтарынан кейінгі сөз қай харакатпен аяқталады?", options:["Касра (ِ)","Дамма (ُ)","Фатха (َ)","Сукун (ْ)"], correct:"Касра (ِ)", explain:"Бұл предлогтар Хуруф әл-Джар деп аталады және өзінен кейінгі сөзді касраға (и) ауыстырады." },
+    { ch:[6], text:"«مِنْ» предлогының негізгі мағынасы қандай?", options:["-дан / бастап","ішінде","қарай","үстінде"], correct:"-дан / бастап", explain:"«مِنْ» қозғалыстың басталу нүктесін немесе «-дан/-ден» мағынасын білдіреді: مِنَ الْبَيْتِ — үйден." },
+    { ch:[6], text:"Орынды сұрайтын «أَيْنَ» сөзі нені білдіреді?", options:["Қайда?","Кім?","Не?","Қашан?"], correct:"Қайда?", explain:"«أَيْنَ» — заттың орнын сұрайды: أَيْنَ الْكِتَابُ؟ — Кітап қайда?" },
+    { ch:[7], text:"Идафа (иелік) тіркесінің бірінші мүшесі (Мудаф) нені қабылдамайды?", options:["Танвин мен «ال»","Тек фатханы","Касраны","Ешқандай шектеу жоқ"], correct:"Танвин мен «ал»", explain:"Мудаф ешқашан танвин де, «ал» да қабылдамайды: كِتَابُ مُحَمَّدٍ (الْكِتَابُ емес)." },
+    { ch:[7], text:"Идафаның екінші мүшесі (Мудаф иләйһ) қай харакатпен аяқталады?", options:["Касра (ِ)","Дамма (ُ)","Фатха (َ)","Сукун (ْ)"], correct:"Касра (ِ)", explain:"Иеленушіні білдіретін екінші мүше әрқашан касрамен (мәджрур) аяқталады: كِتَابُ مُحَمَّدٍ." },
+    { ch:[8], text:"«ذَهَبَ», «كَتَبَ», «أَكَلَ» сияқты сөздер қандай сөз табы және қай шақта тұр?", options:["Етістік, өткен шақ","Зат есім","Сын есім","Есімдік"], correct:"Етістік, өткен шақ", explain:"Бұлар — өткен шақ (мади) етістіктері; үшінші жақ, жекеше, ер түрінде тұр: ذَهَبَ — (ол) барды." }
+  ];
+
+  // ===== SVG суреттер =====
+  const svgAssets = {
+    house:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11v11a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>`,
+    pen:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>`,
+    book:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>`,
+    door:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>`,
+    key:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 7a2 2 0 114 0c0 .341-.086.662-.24 1.15l3.24 3.24a1 1 0 010 1.414l-1 1a1 1 0 01-1.414 0l-3.24-3.24A2 2 0 0115 11a2 2 0 110-4zm-5 7H3v2h2v2h2v-2h2v-2z"/></svg>`,
+    car:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zm-2-4H5m13.5-3h-13a1.5 1.5 0 00-1.5 1.5V14h16v-2.5a1.5 1.5 0 00-1.5-1.5z"/></svg>`,
+    bag:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>`,
+    water:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l5.5 8.5a6.5 6.5 0 11-11 0L12 3z"/></svg>`,
+    sun:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>`,
+    moon:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`,
+    tree:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-6m0 0a6 6 0 006-6 6 6 0 10-12 0 6 6 0 006 6z"/></svg>`,
+    clock:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
+    mountain:`<svg class="w-16 h-16 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18L14 6l-3.5 6L8 9l-5 11z"/></svg>`
+  };
+
+  // ===== Күй =====
+  let isLockingActive = true;
+  let soundOn = true;
+  let arabicFontMultiplier = 1.0;
+  let selectedSpeechSpeed = 1.0;
+  let streak = 0;
+
+  let userProgressMap = {};
+  for (let i = 1; i <= 8; i++) userProgressMap[i] = { passed:false, bestScore:0 };
+
+  let currentActiveChapter = null;
+  let currentQuizList = [];
+  let currentQuestionIdx = 0;
+  let currentCorrectCount = 0;
+  let isQuestionAnswered = false;
+
+  // Сөйлем құрастырғыш күйі
+  let builderPool = [];   // [{word, used}]
+  let builderOrder = [];  // pool индекстері
+
+  // ===== Іске қосу =====
+  window.addEventListener('DOMContentLoaded', () => {
+    try {
+      restoreSettings();
+      renderChapters();
+      updateGlobalProgress();
+      renderDictionary();
+      const cnt = dictionary.length;
+      document.getElementById('dictTeaser').innerText = `Оқулықтың ${cnt} сөзін оқып, дауысталуын кез келген уақытта тыңдаңыз.`;
+      document.getElementById('dictHeaderCount').innerText = `Оқулықта қамтылған ${cnt} негізгі сөз бен тіркес`;
+    } catch(e) { console.error('Init қатесі:', e); }
+  });
+
+  function restoreSettings() {
+    const p = safeStorage.getItem('madrasa_progress_v4');
+    if (p) { try { const o = JSON.parse(p); for (let k=1;k<=8;k++) if (o[k]) userProgressMap[k]=o[k]; } catch(e){} }
+
+    const lock = safeStorage.getItem('madrasa_lock_v4');
+    if (lock !== null) { try { isLockingActive = JSON.parse(lock); } catch(e){ isLockingActive = true; } }
+
+    const snd = safeStorage.getItem('madrasa_sound_v4');
+    if (snd !== null) { try { soundOn = JSON.parse(snd); } catch(e){ soundOn = true; } }
+
+    const f = safeStorage.getItem('madrasa_font_v4');
+    if (f) arabicFontMultiplier = parseFloat(f) || 1.0;
+
+    const s = safeStorage.getItem('madrasa_speed_v4');
+    if (s) selectedSpeechSpeed = parseFloat(s) || 1.0;
+
+    setChecked('modalLockToggle', isLockingActive);
+    setChecked('soundToggle', soundOn);
+    setVal('speechSpeedSlider', selectedSpeechSpeed);
+    setText('speedValText', selectedSpeechSpeed + 'x');
+    applyFontSize();
+  }
+
+  function saveSettings() {
+    safeStorage.setItem('madrasa_progress_v4', JSON.stringify(userProgressMap));
+    safeStorage.setItem('madrasa_lock_v4', JSON.stringify(isLockingActive));
+    safeStorage.setItem('madrasa_sound_v4', JSON.stringify(soundOn));
+    safeStorage.setItem('madrasa_font_v4', arabicFontMultiplier.toString());
+    safeStorage.setItem('madrasa_speed_v4', selectedSpeechSpeed.toString());
+  }
+
+  // Көмекшілер
+  const setChecked = (id,v) => { const el=document.getElementById(id); if(el) el.checked=v; };
+  const setVal = (id,v) => { const el=document.getElementById(id); if(el) el.value=v; };
+  const setText = (id,v) => { const el=document.getElementById(id); if(el) el.innerText=v; };
+
+  function toggleLocking() {
+    const el = document.getElementById('modalLockToggle');
+    isLockingActive = el ? el.checked : isLockingActive;
+    saveSettings(); renderChapters();
+  }
+  function toggleSound() {
+    const el = document.getElementById('soundToggle');
+    soundOn = el ? el.checked : soundOn;
+    if (soundOn) { ensureAudio(); beep('correct'); }
+    saveSettings();
+  }
+
+  function changeFontSize(d) {
+    arabicFontMultiplier = Math.max(0.6, Math.min(2.4, parseFloat((arabicFontMultiplier + d).toFixed(2))));
+    applyFontSize(); saveSettings();
+  }
+  function applyFontSize() {
+    document.documentElement.style.setProperty('--ar-scale', arabicFontMultiplier);
+    const t = Math.round(arabicFontMultiplier * 100) + '%';
+    setText('fontSizeDisplay', t); setText('modalFontSizeDisplay', t);
+  }
+
+  function changeSpeechSpeed(v) {
+    selectedSpeechSpeed = parseFloat(v);
+    setText('speedValText', selectedSpeechSpeed + 'x');
+    saveSettings();
+  }
+
+  function confirmResetProgress() {
+    for (let i=1;i<=8;i++) userProgressMap[i]={passed:false,bestScore:0};
+    saveSettings(); renderChapters(); updateGlobalProgress(); closeSettingsModal();
+    showAlert('Жүйе тазаланды', 'Барлық тараулардың прогресі нөлге теңестірілді.', 'emerald');
+  }
+
+  function updateGlobalProgress() {
+    let done = 0;
+    for (let i=1;i<=8;i++) if (userProgressMap[i].passed) done++;
+    setText('globalProgressText', Math.round(done/8*100) + '%');
+  }
+
+  // ===== Тараулар тізімі =====
+  function renderChapters() {
+    const box = document.getElementById('chaptersList');
+    if (!box) return;
+    box.innerHTML = '';
+    chapters.forEach((ch, idx) => {
+      const prev = chapters[idx-1];
+      const blocked = isLockingActive && prev && !userProgressMap[prev.id].passed;
+      const d = userProgressMap[ch.id];
+      const best = d.bestScore, passed = d.passed;
+
+      let cls = 'relative flex items-start gap-4 p-4 rounded-2xl border transition-all text-left w-full focus:outline-none focus:ring-2 focus:ring-emerald-400 ';
+      let badge = '';
+      if (blocked) {
+        cls += 'bg-stone-100 border-stone-300 opacity-60 cursor-not-allowed';
+        badge = `<span class="bg-stone-200 text-stone-600 text-[9px] font-black px-2.5 py-0.5 rounded flex items-center gap-1 border border-stone-300 select-none">🔒 ЖАБЫҚ</span>`;
+      } else if (passed) {
+        cls += 'bg-emerald-50 border-emerald-300 hover:shadow-md hover:bg-emerald-100';
+        badge = `<span class="bg-emerald-700 text-white text-[9px] font-black px-2.5 py-0.5 rounded flex items-center gap-1 shadow-sm select-none">✓ ӨТІЛДІ (${best}%)</span>`;
+      } else {
+        cls += 'bg-white border-slate-200 hover:shadow-md hover:border-emerald-500 hover:bg-emerald-50/40';
+        badge = `<span class="bg-amber-100 text-amber-900 text-[9px] font-black px-2.5 py-0.5 rounded border border-amber-300 select-none">БАСТАУ</span>`;
+      }
+
+      const btn = document.createElement('button');
+      btn.className = cls;
+      btn.innerHTML = `
+        <div class="flex-grow">
+          <div class="flex justify-between items-start gap-2 mb-1">
+            <span class="text-[10px] text-slate-400 font-extrabold uppercase">Тарау ${ch.id}</span>
+            ${badge}
+          </div>
+          <h3 class="font-extrabold text-sm text-slate-800 leading-tight">${ch.title}</h3>
+          <p class="text-xs text-slate-500 mt-1 leading-relaxed">${ch.desc}</p>
+        </div>`;
+      btn.addEventListener('click', () => blocked ? blockNotification() : startTestingSession(ch.id));
+      box.appendChild(btn);
+    });
+  }
+
+  // ===== Сұрақ генераторы (32 сұрақ: 14 + 8 + 10) =====
+  function shuffle(arr) {
+    const c = [...arr];
+    for (let i=c.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [c[i],c[j]]=[c[j],c[i]]; }
+    return c;
+  }
+  function uniqueDistractors(correct, pool, n, key) {
+    const out = [], seen = new Set([correct]);
+    for (const w of shuffle(pool)) {
+      const v = w[key];
+      if (!seen.has(v)) { seen.add(v); out.push(v); if (out.length===n) break; }
+    }
+    return out;
+  }
+
+  function generateChapterQuestions(chapterId) {
+    const list = [];
+    const chapterWords = dictionary.filter(w => w.chapter === chapterId);
+
+    // 1) Сөз жаттау — әр сөз екі бағытта (AR↔KZ), 14-ке дейін
+    const vocabPairs = [];
+    chapterWords.forEach(w => {
+      vocabPairs.push({ w, dir:'ar2kz' });
+      vocabPairs.push({ w, dir:'kz2ar' });
+    });
+    shuffle(vocabPairs).slice(0, 14).forEach((p, i) => {
+      const w = p.w;
+      if (p.dir === 'ar2kz') {
+        const alts = uniqueDistractors(w.kazakh, dictionary, 3, 'kazakh');
+        list.push({
+          type:'vocab',
+          text:'Берілген араб сөзінің дұрыс қазақша аудармасын табыңыз:',
+          arabic:w.arabic,
+          options: shuffle([w.kazakh, ...alts]),
+          correct:w.kazakh,
+          image: w.image || null,
+          explanation:`«${w.arabic}» (${w.transcription}) — қазақша «${w.kazakh}» деген мағынаны береді.`
+        });
+      } else {
+        const alts = uniqueDistractors(w.arabic, dictionary, 3, 'arabic');
+        list.push({
+          type:'vocab',
+          text:'Берілген қазақша сөздің дұрыс арабша баламасын таңдаңыз:',
+          arabic:`«${w.kazakh}»`,
+          options: shuffle([w.arabic, ...alts]),
+          correct:w.arabic,
+          image:null,
+          explanation:`«${w.kazakh}» сөзі арабшада «${w.arabic}» (${w.transcription}) болады.`
+        });
+      }
+    });
+
+    // 2) Сөйлем құрау — тарауға қатыстысын алға қойып, 8 үлгі
+    const sRelevant = sentenceTemplates.filter(t => t.ch.includes(chapterId));
+    const sOther = sentenceTemplates.filter(t => !t.ch.includes(chapterId));
+    const sPool = [...shuffle(sRelevant), ...shuffle(sOther)].slice(0, 8);
+    sPool.forEach(t => {
+      list.push({
+        type:'sentence',
+        text:`Сөздерді дұрыс ретпен орналастырып, мына сөйлемді арабша құраңыз: «${t.translation}»`,
+        correctWords:[...t.words],
+        explanation:t.explain
+      });
+    });
+
+    // 3) Грамматика — тарауға қатыстысын алға қойып, 10 сұрақ
+    const gRelevant = grammarRules.filter(r => r.ch.includes(chapterId));
+    const gOther = grammarRules.filter(r => !r.ch.includes(chapterId));
+    const gPool = [...shuffle(gRelevant), ...shuffle(gOther)].slice(0, 10);
+    gPool.forEach(r => {
+      list.push({
+        type:'grammar',
+        text:r.text,
+        options: shuffle([...r.options]),
+        correct:r.correct,
+        explanation:r.explain
+      });
+    });
+
+    return shuffle(list);
+  }
+
+  // ===== Сынақ ағыны =====
+  function startTestingSession(chapterId) {
+    currentActiveChapter = chapters.find(c => c.id === chapterId);
+    currentQuizList = generateChapterQuestions(chapterId);
+    currentQuestionIdx = 0;
+    currentCorrectCount = 0;
+    streak = 0;
+
+    show('quizScreen'); hide('introScreen'); hide('resultScreen'); hide('dictionaryScreen');
+    setText('quizChapterBadge', `Тарау ${currentActiveChapter.id}`);
+    setText('quizChapterTitle', currentActiveChapter.title);
+    updateStreak();
+    renderQuestion();
+  }
+
+  function updateStreak() {
+    setText('streakText', streak);
+    const box = document.getElementById('streakBox');
+    if (box) box.style.opacity = streak >= 3 ? '1' : '0.6';
+  }
+
+  function renderQuestion() {
+    isQuestionAnswered = false;
+    const q = currentQuizList[currentQuestionIdx];
+    const total = currentQuizList.length;
+
+    document.getElementById('quizProgressBar').style.width = Math.round(currentQuestionIdx/total*100) + '%';
+    setText('questionCounter', `Сұрақ: ${currentQuestionIdx+1} / ${total}`);
+    hide('explanationContainer');
+
+    const block = document.getElementById('questionBlock');
+    block.classList.remove('fade-in'); void block.offsetWidth; block.classList.add('fade-in');
+
+    // Түр белгісі
+    const badge = document.getElementById('questionTypeBadge');
+    if (q.type === 'vocab') { badge.innerText='Сөз жаттау'; badge.className='text-xs font-black px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200'; }
+    else if (q.type === 'sentence') { badge.innerText='Сөйлем құрау'; badge.className='text-xs font-black px-3 py-1.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200'; }
+    else { badge.innerText='Грамматика'; badge.className='text-xs font-black px-3 py-1.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200'; }
+
+    setText('questionText', q.text);
+
+    // Сурет
+    const imgBox = document.getElementById('questionImageContainer');
+    if (q.image && svgAssets[q.image]) { imgBox.innerHTML = svgAssets[q.image]; show(imgBox,'flex'); }
+    else { hide(imgBox); }
+
+    const optBox = document.getElementById('optionsContainer');
+    optBox.innerHTML = '';
+    hide('arabicQuestionContainer');
+    hide('sentenceBuilderContainer');
+    show(optBox);
+
+    if (q.type === 'vocab' || q.type === 'grammar') {
+      if (q.type === 'vocab' && q.arabic) {
+        show('arabicQuestionContainer');
+        const hero = document.getElementById('arabicWordText');
+        // Араб сөзі — RTL Amiri қарпімен; қазақша сөз — LTR негізгі қаріппен.
+        // Екеуі де бірдей --ar-scale арқылы үлкейіп-кішірейеді.
+        hero.classList.remove('arabic-text', 'ar-hero', 'kz-hero');
+        if (isArabic(q.arabic)) hero.classList.add('arabic-text', 'ar-hero');
+        else hero.classList.add('kz-hero');
+        setText('arabicWordText', q.arabic);
+      }
+      q.options.forEach((opt, i) => {
+        const b = document.createElement('button');
+        b.className = 'opt-btn w-full text-left p-4 rounded-2xl border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/40 transition-all font-semibold flex justify-between items-center bg-white shadow-sm hover:shadow-md gap-3';
+        b.innerHTML = `
+          <span class="flex items-center gap-3">
+            <kbd class="bg-slate-100 text-slate-500 border border-slate-300">${i+1}</kbd>
+            <span class="${isArabic(opt) ? 'arabic-text ar-option' : 'kz-option'}">${opt}</span>
+          </span>
+          <span class="opt-circle w-5 h-5 rounded-full border border-slate-300 flex items-center justify-center shrink-0"></span>`;
+        b.addEventListener('click', () => checkAnswer(b, opt));
+        optBox.appendChild(b);
+      });
+    } else if (q.type === 'sentence') {
+      hide(optBox);
+      show('sentenceBuilderContainer');
+      initSentenceBuilder(q.correctWords);
+    }
+  }
+
+  // ===== Сөйлем құрастырғыш =====
+  function initSentenceBuilder(correctWords) {
+    const distractorBank = ["فِي","عَلَى","مِنْ","وَ","هُوَ","هِيَ","كَبِيرٌ","جَمِيلٌ","قَلَمٌ","لَا"];
+    let pieces = [...correctWords];
+    if (correctWords.length >= 3) {
+      const d = shuffle(distractorBank).find(x => !correctWords.includes(x));
+      if (d) pieces.push(d);
+    }
+    builderPool = shuffle(pieces).map(w => ({ word:w, used:false }));
+    builderOrder = [];
+    renderSentenceBuilder();
+  }
+
+  function renderSentenceBuilder() {
+    const dz = document.getElementById('sentenceDropzone');
+    const pool = document.getElementById('sentenceWordsPool');
+    dz.innerHTML = ''; pool.innerHTML = '';
+
+    if (builderOrder.length === 0) {
+      dz.innerHTML = `<p class="text-slate-400 text-xs italic">Сөздерді ретпен таңдап орналастырыңыз…</p>`;
+    } else {
+      builderOrder.forEach((poolIdx, pos) => {
+        const b = document.createElement('button');
+        b.className = 'bg-emerald-50 text-emerald-950 px-4 py-2 rounded-xl font-bold border border-emerald-200 shadow-sm flex items-center gap-2 arabic-text ar-chip hover:bg-emerald-100 transition-all';
+        b.innerHTML = `${builderPool[poolIdx].word}<span class="text-xs text-emerald-500">×</span>`;
+        b.addEventListener('click', () => removeWord(pos));
+        dz.appendChild(b);
+      });
+    }
+
+    builderPool.forEach((item, idx) => {
+      if (item.used) return;
+      const b = document.createElement('button');
+      b.className = 'bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-500 px-5 py-3 rounded-2xl font-bold shadow-sm transition-all arabic-text ar-chip';
+      b.innerText = item.word;
+      b.addEventListener('click', () => addWord(idx));
+      pool.appendChild(b);
+    });
+  }
+
+  function addWord(poolIdx) {
+    if (isQuestionAnswered) return;
+    builderPool[poolIdx].used = true;
+    builderOrder.push(poolIdx);
+    renderSentenceBuilder();
+  }
+  function removeWord(pos) {
+    if (isQuestionAnswered) return;
+    const poolIdx = builderOrder[pos];
+    builderPool[poolIdx].used = false;
+    builderOrder.splice(pos, 1);
+    renderSentenceBuilder();
+  }
+
+  function checkSentenceConstruction() {
+    if (isQuestionAnswered) return;
+    if (builderOrder.length === 0) { showAlert('Сөйлем бос', 'Алдымен төмендегі сөздерден сөйлем құраңыз.', 'red'); return; }
+    isQuestionAnswered = true;
+
+    const q = currentQuizList[currentQuestionIdx];
+    const built = builderOrder.map(i => builderPool[i].word);
+    const ok = JSON.stringify(built) === JSON.stringify(q.correctWords);
+    const dz = document.getElementById('sentenceDropzone');
+
+    if (ok) {
+      registerCorrect();
+      dz.className = 'min-h-[120px] p-4 bg-emerald-50 border-2 border-emerald-400 rounded-3xl flex flex-wrap gap-2.5 justify-center items-center shadow-inner';
+      showExplanation(true, q.explanation);
+    } else {
+      registerWrong();
+      dz.className = 'min-h-[120px] p-4 bg-rose-50 border-2 border-rose-400 rounded-3xl flex flex-wrap gap-2.5 justify-center items-center shadow-inner shake';
+      const pool = document.getElementById('sentenceWordsPool');
+      pool.innerHTML = `
+        <div class="w-full text-center py-1 text-xs text-rose-500 font-bold mb-1">Дұрыс реті (оңнан солға):</div>
+        <div class="flex gap-2 justify-center arabic-text ar-line font-bold bg-slate-50 p-4 rounded-xl border border-slate-200" dir="rtl">${q.correctWords.join(' ')}</div>`;
+      showExplanation(false, q.explanation);
+    }
+  }
+
+  // ===== Жауапты тексеру (vocab / grammar) =====
+  function checkAnswer(btn, value) {
+    if (isQuestionAnswered) return;
+    isQuestionAnswered = true;
+    const q = currentQuizList[currentQuestionIdx];
+    const ok = (value === q.correct);
+
+    document.querySelectorAll('#optionsContainer .opt-btn').forEach(b => {
+      b.disabled = true;
+      b.classList.remove('hover:border-emerald-400','hover:bg-emerald-50/40','hover:shadow-md');
+    });
+
+    const circle = btn.querySelector('.opt-circle');
+    if (ok) {
+      registerCorrect();
+      btn.classList.add('bg-emerald-50','border-emerald-400');
+      circle.className = 'opt-circle w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-white';
+      circle.innerHTML = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>`;
+      showExplanation(true, q.explanation);
+    } else {
+      registerWrong();
+      btn.classList.add('bg-rose-50','border-rose-400','shake');
+      circle.className = 'opt-circle w-5 h-5 rounded-full bg-rose-500 flex items-center justify-center text-white';
+      circle.innerHTML = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+      document.querySelectorAll('#optionsContainer .opt-btn').forEach(b => {
+        const span = b.querySelector('span > span') || b.querySelector('span:last-child');
+        const txt = b.querySelectorAll('span')[1] ? b.querySelectorAll('span')[1].innerText : '';
+        if (txt === q.correct) b.classList.add('bg-emerald-50','border-emerald-300');
+      });
+      showExplanation(false, q.explanation);
+    }
+  }
+
+  function registerCorrect() { currentCorrectCount++; streak++; updateStreak(); beep('correct'); }
+  function registerWrong() { streak = 0; updateStreak(); beep('wrong'); }
+
+  function showExplanation(ok, text) {
+    const c = document.getElementById('explanationContainer');
+    const icon = document.getElementById('explanationIcon');
+    if (ok) {
+      c.className = 'mt-8 p-5 rounded-2xl border-2 border-emerald-200 bg-emerald-50 transition-all shadow-sm fade-in';
+      icon.className = 'p-3 rounded-xl bg-emerald-600 text-white shadow-sm shrink-0';
+      icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"></path></svg>`;
+      setText('explanationTitle', 'Керемет! Жауабыңыз дұрыс');
+      document.getElementById('explanationTitle').className = 'font-black kz-option text-emerald-800';
+    } else {
+      c.className = 'mt-8 p-5 rounded-2xl border-2 border-rose-200 bg-rose-50 transition-all shadow-sm fade-in';
+      icon.className = 'p-3 rounded-xl bg-rose-600 text-white shadow-sm shrink-0';
+      icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"></path></svg>`;
+      setText('explanationTitle', 'Қате жауап — анықтама:');
+      document.getElementById('explanationTitle').className = 'font-black kz-option text-rose-800';
+    }
+    setText('explanationText', text);
+    show(c);
+  }
+
+  function nextQuestion() {
+    currentQuestionIdx++;
+    if (currentQuestionIdx < currentQuizList.length) renderQuestion();
+    else completeSession();
+  }
+
+  function completeSession() {
+    hide('quizScreen'); show('resultScreen');
+    const total = currentQuizList.length;
+    const pct = Math.round(currentCorrectCount/total*100);
+    const need = Math.ceil(total*0.8);
+
+    setText('resultTotalQuestions', total);
+    setText('resultCorrectCount', currentCorrectCount);
+    setText('resultScorePercent', pct + '%');
+
+    if (pct > userProgressMap[currentActiveChapter.id].bestScore)
+      userProgressMap[currentActiveChapter.id].bestScore = pct;
+
+    const badge = document.getElementById('resultBadge');
+    const alertBox = document.getElementById('resultStatusAlert');
+    const nextBtn = document.getElementById('nextChapterBtn');
+    const isLast = currentActiveChapter.id === 8;
+
+    if (pct >= 80) {
+      userProgressMap[currentActiveChapter.id].passed = true;
+      setText('resultTitle', isLast ? 'Барлық тарау аяқталды!' : 'Сәтті өттіңіз!');
+      badge.className = 'w-20 h-20 rounded-full flex items-center justify-center mb-6 border bg-emerald-50 border-emerald-200';
+      badge.innerHTML = `<svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+      alertBox.className = 'w-full max-w-sm p-4 rounded-xl mb-8 border border-emerald-200 bg-emerald-50 text-emerald-900 text-sm shadow-inner';
+      alertBox.innerHTML = isLast
+        ? `<strong>Құттықтаймыз!</strong> Сіз барлық сегіз тараудан табысты өттіңіз. Біліміңіз тұрақты — енді сөздікпен бекіте беріңіз.`
+        : `<strong>Жарайсыз!</strong> Көрсеткіш 80%-дан жоғары. Келесі тараудың құлпы ашылды.`;
+      nextBtn.classList.toggle('hidden', isLast);
+      launchConfetti();
+    } else {
+      setText('resultTitle', 'Тағы бір талпыныс');
+      badge.className = 'w-20 h-20 rounded-full flex items-center justify-center mb-6 border bg-amber-50 border-amber-200';
+      badge.innerHTML = `<svg class="w-10 h-10 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
+      alertBox.className = 'w-full max-w-sm p-4 rounded-xl mb-8 border border-amber-200 bg-amber-50 text-amber-900 text-sm shadow-inner';
+      alertBox.innerHTML = `Өту үшін кемінде <strong>80%</strong> (${need}/${total} дұрыс) жинау қажет. Қателескен ережелерді сөздіктен қайталап, сынақты қайта тапсырыңыз.`;
+      nextBtn.classList.toggle('hidden', isLockingActive);
+    }
+
+    saveSettings(); renderChapters(); updateGlobalProgress();
+  }
+
+  function restartCurrentQuiz() { startTestingSession(currentActiveChapter.id); }
+  function goToNextChapterFromResults() {
+    const n = currentActiveChapter.id + 1;
+    if (n <= 8) startTestingSession(n);
+    else { showAlert('Құттықтаймыз!', 'Сіз барлық сегіз тараудан толық өттіңіз!', 'emerald'); exitQuiz(); }
+  }
+  function exitQuiz() { hide('quizScreen'); hide('resultScreen'); show('introScreen'); }
+
+  // ===== Модальдар =====
+  function openSettingsModal(){ show('settingsModal'); }
+  function closeSettingsModal(){ hide('settingsModal'); }
+
+  // ===== Сөздік =====
+  function openDictionary(){ hide('introScreen'); hide('quizScreen'); hide('resultScreen'); show('dictionaryScreen'); }
+  function closeDictionary(){ hide('dictionaryScreen'); show('introScreen'); }
+
+  function renderDictionary() {
+    const grid = document.getElementById('dictionaryWordsGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    dictionary.forEach(w => {
+      const card = document.createElement('div');
+      card.className = 'dict-item p-4 rounded-xl border border-slate-200 bg-white hover:bg-emerald-50/40 hover:border-emerald-500 transition-all flex justify-between items-center shadow-sm';
+      card.dataset.search = (w.arabic + ' ' + w.kazakh + ' ' + w.transcription).toLowerCase();
+      card.dataset.chapter = w.chapter;
+      card.innerHTML = `
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="arabic-text ar-dict font-black text-slate-800 leading-none">${w.arabic}</span>
+            <button class="speak-btn text-emerald-600 hover:text-emerald-700 p-1.5 rounded-full hover:bg-emerald-50 transition-all" title="Дыбыстау">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.54 8.46a5 5 0 010 7.07M18.36 5.64a9 9 0 010 12.73M5.59 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.59l4.7-4.7c.63-.63 1.71-.19 1.71.7v14c0 .89-1.08 1.34-1.71.71L5.59 15z"></path></svg>
+            </button>
+          </div>
+          <p class="kz-translit text-slate-400 font-bold mt-1">Оқылуы: [ ${w.transcription} ]</p>
+          <p class="kz-text text-slate-700 font-extrabold mt-1">Аудармасы: ${w.kazakh}</p>
+        </div>
+        <span class="text-[9px] bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded-full uppercase border border-amber-200 shrink-0 ml-2">Тарау ${w.chapter}</span>`;
+      card.querySelector('.speak-btn').addEventListener('click', () => speakWord(w.arabic));
+      grid.appendChild(card);
+    });
+  }
+
+  function speakWord(text) {
+    // I'raб (соңғы танвин) белгілерін алып тастап, негізгі дыбысты қалдыру
+    const clean = text.replace(/[\u064B\u064C\u064D]/g, '');
+    if ('speechSynthesis' in window) {
+      const u = new SpeechSynthesisUtterance(clean);
+      u.lang = 'ar-SA'; u.rate = selectedSpeechSpeed;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    } else {
+      showAlert('Қолдау жоқ', 'Бұл құрылғы дауыстау қызметін қолдамайды.', 'red');
+    }
+  }
+
+  function filterDictionary() {
+    const q = document.getElementById('dictSearch').value.toLowerCase().trim();
+    const ch = document.getElementById('dictChapterFilter').value;
+    let visible = 0;
+    document.querySelectorAll('.dict-item').forEach(item => {
+      const matchText = item.dataset.search.includes(q);
+      const matchChapter = ch === '0' || item.dataset.chapter === ch;
+      const ok = matchText && matchChapter;
+      item.classList.toggle('hidden', !ok);
+      if (ok) visible++;
+    });
+    document.getElementById('dictEmptyMsg').classList.toggle('hidden', visible !== 0);
+  }
+
+  // ===== Дыбыс (Web Audio) =====
+  let audioCtx = null;
+  function ensureAudio() {
+    if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){ return; } }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function tone(freq, start, dur) {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    o.connect(g); g.connect(audioCtx.destination);
+    const t = audioCtx.currentTime + start;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.08, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+  function beep(type) {
+    if (!soundOn) return;
+    ensureAudio(); if (!audioCtx) return;
+    if (type === 'correct') { tone(660, 0, 0.12); tone(880, 0.1, 0.16); }
+    else { tone(300, 0, 0.18); tone(220, 0.08, 0.22); }
+  }
+
+  // ===== Confetti =====
+  function launchConfetti() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const colors = ['#10b981','#f59e0b','#facc15','#0ea5e9','#34d399','#fbbf24'];
+    for (let i = 0; i < 90; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = Math.random()*100 + 'vw';
+      p.style.background = colors[Math.floor(Math.random()*colors.length)];
+      p.style.animationDuration = (2 + Math.random()*1.6) + 's';
+      p.style.animationDelay = (Math.random()*0.4) + 's';
+      p.style.transform = `rotate(${Math.random()*360}deg)`;
+      if (Math.random() > 0.5) p.style.borderRadius = '50%';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 4200);
+    }
+  }
+
+  // ===== Ескерту =====
+  function showAlert(title, msg, color='red') {
+    const m = document.getElementById('customAlert');
+    const box = document.getElementById('alertIconBox');
+    setText('alertTitle', title); setText('alertMessage', msg);
+    if (color === 'red') {
+      box.className = 'w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-200';
+      box.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"></path></svg>`;
+    } else {
+      box.className = 'w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200';
+      box.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"></path></svg>`;
+    }
+    show(m);
+  }
+  function closeAlert(){ hide('customAlert'); }
+  function blockNotification() {
+    showAlert('Тарау бұғатталған', 'Бұл тарауды ашу үшін алдыңғы деңгейден кемінде 80% жинаңыз немесе баптаулардан бұғаттауды өшіріңіз.', 'red');
+  }
+
+  // ===== Көрсету/жасыру көмекшілері =====
+  function show(el, disp='block'){ el = typeof el==='string'?document.getElementById(el):el; if(el){ el.classList.remove('hidden'); if(disp==='flex') el.classList.add('flex'); } }
+  function hide(el){ el = typeof el==='string'?document.getElementById(el):el; if(el){ el.classList.add('hidden'); el.classList.remove('flex'); } }
+
+  // ===== Пернетақта басқаруы =====
+  document.addEventListener('keydown', (e) => {
+    const quizOpen = !document.getElementById('quizScreen').classList.contains('hidden');
+    if (!quizOpen) return;
+
+    const explShown = !document.getElementById('explanationContainer').classList.contains('hidden');
+    if (explShown) {
+      if (e.key === 'Enter') { e.preventDefault(); nextQuestion(); }
+      return;
+    }
+
+    const sentenceMode = !document.getElementById('sentenceBuilderContainer').classList.contains('hidden');
+    if (sentenceMode) {
+      if (e.key === 'Enter') { e.preventDefault(); checkSentenceConstruction(); }
+      else if (e.key === 'Backspace') { e.preventDefault(); if (builderOrder.length) removeWord(builderOrder.length-1); }
+      return;
+    }
+
+    if (['1','2','3','4'].includes(e.key)) {
+      const btns = document.querySelectorAll('#optionsContainer .opt-btn');
+      const idx = parseInt(e.key, 10) - 1;
+      if (btns[idx] && !btns[idx].disabled) btns[idx].click();
+    }
+  });
+</script>
+</body>
+</html>
