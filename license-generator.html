@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔐 Кілт генераторы — Madrasa Test IQ (ҚҰПИЯ)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  .mono { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; }
+</style>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-800 p-4 sm:p-8">
+
+  <div class="max-w-3xl mx-auto">
+
+    <!-- Қауіпсіздік ескертуі -->
+    <div class="bg-rose-600 text-white rounded-2xl p-4 mb-6 shadow-lg flex items-start gap-3">
+      <svg class="w-7 h-7 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"></path></svg>
+      <div>
+        <h1 class="font-black text-lg leading-tight">ҚҰПИЯ ҚҰРАЛ — таратуға БОЛМАЙДЫ</h1>
+        <p class="text-sm text-rose-50 mt-1 leading-relaxed">Бұл файлда жабық қол қою кілті (private key) бар. Оны тұтынушыларға жібермеңіз әрі ашық интернетке салмаңыз. Тек өзіңізде сақтаңыз. Тек <span class="font-bold">madrasa_test_iq.html</span> файлын ғана сатыңыз.</p>
+      </div>
+    </div>
+
+    <h2 class="text-2xl font-black text-slate-900 mb-1">Лицензиялық кілт генераторы</h2>
+    <p class="text-sm text-slate-500 mb-6">Әр тұтынушыға жеке кілт жасаңыз. Мерзімі біткенде осы жерден жаңа кілт беріп жаңартасыз.</p>
+
+    <!-- Жасау формасы -->
+    <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-200 mb-6">
+      <h3 class="font-extrabold text-slate-800 mb-4 flex items-center gap-2"><span class="text-emerald-600">＋</span> Жаңа кілт жасау</h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-bold text-slate-600 mb-1">Тұтынушы аты / email <span class="text-slate-400 font-normal">(кілт ішінде сақталады)</span></label>
+          <input id="custName" type="text" placeholder="Мысалы: Айбек Серіков" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Тұтынушы ID <span class="text-slate-400 font-normal">(жаңартуда сол ID-ді қойыңыз)</span></label>
+          <input id="custId" type="text" placeholder="Бос → автоматты жасалады" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm mono">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Жарамдылық мерзімі</label>
+          <select id="durationSel" onchange="onDurationChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white">
+            <option value="30">1 ай (30 күн)</option>
+            <option value="90">3 ай (90 күн)</option>
+            <option value="180">6 ай (180 күн)</option>
+            <option value="365" selected>1 жыл (365 күн)</option>
+            <option value="0">Мерзімсіз (lifetime)</option>
+            <option value="-1">Нақты күнді таңдау…</option>
+          </select>
+        </div>
+
+        <div id="customDateWrap" class="hidden sm:col-span-2">
+          <label class="block text-xs font-bold text-slate-600 mb-1">Аяқталу күні</label>
+          <input id="customDate" type="date" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+        </div>
+      </div>
+
+      <button onclick="generateKey()" class="mt-5 w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-3 rounded-xl shadow-md transition-all">Кілт жасау</button>
+
+      <!-- Нәтиже -->
+      <div id="resultWrap" class="hidden mt-5">
+        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+          <p class="text-xs font-bold text-emerald-800 mb-2" id="resultSummary"></p>
+          <textarea id="resultKey" rows="4" readonly class="w-full p-3 rounded-lg border border-emerald-200 bg-white text-xs mono break-all resize-none"></textarea>
+          <button onclick="copyResult()" class="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold px-4 py-2 rounded-lg transition-all">📋 Кілтті көшіру</button>
+          <span id="copyMsg" class="text-xs text-emerald-700 font-bold ml-2"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Кілтті тексеру -->
+    <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-200 mb-6">
+      <h3 class="font-extrabold text-slate-800 mb-4 flex items-center gap-2"><span class="text-sky-600">✓</span> Кілтті тексеру (ашық кілтпен)</h3>
+      <textarea id="verifyInput" rows="3" placeholder="Тексеру үшін кілтті осында қойыңыз..." class="w-full p-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500 text-xs mono break-all resize-none"></textarea>
+      <button onclick="verifyKeyUI()" class="mt-2 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold px-4 py-2 rounded-lg transition-all">Тексеру</button>
+      <p id="verifyResult" class="hidden mt-3 text-sm font-bold"></p>
+    </div>
+
+    <!-- Шығарылған кілттер журналы -->
+    <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-200">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-extrabold text-slate-800 flex items-center gap-2"><span class="text-amber-600">☰</span> Шығарылған кілттер журналы</h3>
+        <button onclick="clearLog()" class="text-xs text-rose-600 font-bold hover:underline">Журналды тазалау</button>
+      </div>
+      <p class="text-[11px] text-slate-400 mb-3">Журнал тек осы браузерде (localStorage) сақталады. Маңызды кілттерді бөлек сақтап қойыңыз.</p>
+      <div id="logEmpty" class="text-sm text-slate-400 py-6 text-center">Әзірге кілт жасалмаған.</div>
+      <div id="logTableWrap" class="hidden overflow-x-auto">
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="text-left text-slate-400 border-b border-slate-200">
+              <th class="py-2 pr-2 font-bold">Тұтынушы</th>
+              <th class="py-2 pr-2 font-bold">ID</th>
+              <th class="py-2 pr-2 font-bold">Берілді</th>
+              <th class="py-2 pr-2 font-bold">Аяқталуы</th>
+              <th class="py-2 pr-2 font-bold"></th>
+            </tr>
+          </thead>
+          <tbody id="logTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="text-center text-[11px] text-slate-400 mt-6">Madrasa Test IQ — лицензия генераторы · ECDSA P-256</p>
+  </div>
+
+<script>
+  // ============================================================
+  //  ⚠ ЖАБЫҚ КІЛТ — ҚҰПИЯ. Бұл файлды таратпаңыз!
+  //  Ашық кілт (x, y) madrasa_test_iq.html ішіндегі LICENSE_PUBLIC_JWK-пен
+  //  ДӘЛ СӘЙКЕС болуы тиіс. Жұпты ауыстырсаңыз, екеуін де бірге жаңартыңыз.
+  const PRIVATE_JWK = {"kty":"EC","crv":"P-256","x":"Vd7k2aDC9UVz5HINfkd1UtRR2evIF2y1hHFAAYILMEQ","y":"hF0wSvWnbsCPz-W_LaTYRYpnomaGy4mQHSV5xHzXZUI","d":"6g303wRIKDykxlumujWZOAaxcb_IwYyN74M5ebwesDg"};
+  const PUBLIC_JWK  = {"kty":"EC","crv":"P-256","x":"Vd7k2aDC9UVz5HINfkd1UtRR2evIF2y1hHFAAYILMEQ","y":"hF0wSvWnbsCPz-W_LaTYRYpnomaGy4mQHSV5xHzXZUI"};
+  // ============================================================
+  const LOG_KEY = 'madrasa_keys_log_v1';
+
+  let privPromise = null, pubPromise = null;
+  function getPriv() { return privPromise || (privPromise = crypto.subtle.importKey('jwk', PRIVATE_JWK, {name:'ECDSA',namedCurve:'P-256'}, false, ['sign'])); }
+  function getPub()  { return pubPromise  || (pubPromise  = crypto.subtle.importKey('jwk', PUBLIC_JWK,  {name:'ECDSA',namedCurve:'P-256'}, false, ['verify'])); }
+
+  function bytesToB64url(bytes) {
+    let bin = '';
+    for (let i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function b64urlToBytes(str) {
+    str = str.replace(/-/g,'+').replace(/_/g,'/');
+    while (str.length % 4) str += '=';
+    const bin = atob(str);
+    const out = new Uint8Array(bin.length);
+    for (let i=0;i<bin.length;i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function randId() {
+    const b = new Uint8Array(5);
+    crypto.getRandomValues(b);
+    const alpha = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'; // Crockford base32 (ұқсас әріптерсіз)
+    let s = '';
+    for (let i=0;i<b.length;i++) s += alpha[b[i] % alpha.length];
+    return s.replace(/(.{4})/g, '$1-').replace(/-$/, '');
+  }
+  function fmtDate(sec) {
+    if (!sec) return 'мерзімсіз';
+    return new Date(sec*1000).toLocaleDateString('kk-KZ', {year:'numeric',month:'2-digit',day:'2-digit'});
+  }
+
+  function onDurationChange() {
+    const v = document.getElementById('durationSel').value;
+    document.getElementById('customDateWrap').classList.toggle('hidden', v !== '-1');
+  }
+
+  async function signPayload(payload) {
+    const payloadBytes = new TextEncoder().encode(JSON.stringify(payload));
+    const sig = new Uint8Array(await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'}, await getPriv(), payloadBytes));
+    return bytesToB64url(payloadBytes) + '.' + bytesToB64url(sig);
+  }
+
+  async function generateKey() {
+    const name = document.getElementById('custName').value.trim();
+    if (!name) { alert('Тұтынушы атын немесе email енгізіңіз.'); return; }
+
+    const sel = document.getElementById('durationSel').value;
+    const now = Math.floor(Date.now()/1000);
+    const payload = { v:1, id: (document.getElementById('custId').value.trim() || randId()), n: name, iat: now };
+
+    if (sel === '-1') {
+      const d = document.getElementById('customDate').value;
+      if (!d) { alert('Аяқталу күнін таңдаңыз.'); return; }
+      const exp = Math.floor(new Date(d + 'T23:59:59').getTime()/1000);
+      if (exp <= now) { alert('Аяқталу күні бүгіннен кейін болуы керек.'); return; }
+      payload.exp = exp;
+    } else if (sel !== '0') {
+      payload.exp = now + parseInt(sel,10) * 86400;
+    } // sel === '0' → мерзімсіз (exp жоқ)
+
+    const key = await signPayload(payload);
+
+    document.getElementById('custId').value = payload.id; // жаңартуға ыңғайлы болу үшін
+    document.getElementById('resultKey').value = key;
+    document.getElementById('resultSummary').innerText =
+      `${payload.n}  ·  ID: ${payload.id}  ·  ${payload.exp ? 'аяқталуы: ' + fmtDate(payload.exp) : 'мерзімсіз'}  ·  ${key.length} таңба`;
+    document.getElementById('resultWrap').classList.remove('hidden');
+    document.getElementById('copyMsg').innerText = '';
+
+    addToLog({ id:payload.id, n:payload.n, iat:payload.iat, exp:payload.exp || null, key });
+  }
+
+  function copyResult() {
+    const ta = document.getElementById('resultKey');
+    ta.select();
+    navigator.clipboard.writeText(ta.value).then(
+      () => { document.getElementById('copyMsg').innerText = '✓ Көшірілді'; },
+      () => { try { document.execCommand('copy'); document.getElementById('copyMsg').innerText = '✓ Көшірілді'; } catch(e) { document.getElementById('copyMsg').innerText = 'Қолмен көшіріңіз'; } }
+    );
+  }
+
+  async function verifyKeyUI() {
+    const raw = document.getElementById('verifyInput').value.replace(/\s+/g,'');
+    const el = document.getElementById('verifyResult');
+    el.classList.remove('hidden');
+    const dot = raw.indexOf('.');
+    if (dot < 1) { el.className = 'mt-3 text-sm font-bold text-rose-600'; el.innerText = '✗ Пішімі қате.'; return; }
+    try {
+      const pB = b64urlToBytes(raw.slice(0,dot));
+      const sB = b64urlToBytes(raw.slice(dot+1));
+      const ok = await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'}, await getPub(), sB, pB);
+      if (!ok) { el.className = 'mt-3 text-sm font-bold text-rose-600'; el.innerText = '✗ Қолтаңба жарамсыз (бұл кілт біздің жұппен жасалмаған).'; return; }
+      const p = JSON.parse(new TextDecoder().decode(pB));
+      const expired = p.exp && (Date.now()/1000) > p.exp;
+      el.className = 'mt-3 text-sm font-bold ' + (expired ? 'text-amber-600' : 'text-emerald-600');
+      el.innerText = `${expired ? '⚠ Қолтаңба дұрыс, бірақ МЕРЗІМІ БІТКЕН' : '✓ Жарамды'} · ${p.n || ''} · ID: ${p.id || ''} · ${p.exp ? 'аяқталуы: ' + fmtDate(p.exp) : 'мерзімсіз'}`;
+    } catch(e) {
+      el.className = 'mt-3 text-sm font-bold text-rose-600'; el.innerText = '✗ Кілтті оқу мүмкін болмады.';
+    }
+  }
+
+  // ===== Журнал =====
+  function loadLog() {
+    try { return JSON.parse(localStorage.getItem(LOG_KEY) || '[]'); } catch(e) { return []; }
+  }
+  function saveLog(arr) {
+    try { localStorage.setItem(LOG_KEY, JSON.stringify(arr)); } catch(e) {}
+  }
+  function addToLog(entry) {
+    const arr = loadLog();
+    arr.unshift(entry);
+    saveLog(arr);
+    renderLog();
+  }
+  function clearLog() {
+    if (!confirm('Журналды толық тазалайсыз ба? Бұл шығарылған кілттерді қалпына келтірмейді.')) return;
+    saveLog([]);
+    renderLog();
+  }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function renderLog() {
+    const arr = loadLog();
+    document.getElementById('logEmpty').classList.toggle('hidden', arr.length !== 0);
+    document.getElementById('logTableWrap').classList.toggle('hidden', arr.length === 0);
+    const body = document.getElementById('logTableBody');
+    body.innerHTML = '';
+    arr.forEach((e, i) => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-slate-100';
+      tr.innerHTML = `
+        <td class="py-2 pr-2 font-semibold text-slate-700">${esc(e.n)}</td>
+        <td class="py-2 pr-2 mono text-slate-500">${esc(e.id)}</td>
+        <td class="py-2 pr-2 text-slate-500">${fmtDate(e.iat)}</td>
+        <td class="py-2 pr-2 text-slate-500">${e.exp ? fmtDate(e.exp) : 'мерзімсіз'}</td>
+        <td class="py-2 pr-2 text-right whitespace-nowrap">
+          <button data-i="${i}" class="copyLog bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2 py-1 rounded">көшіру</button>
+        </td>`;
+      body.appendChild(tr);
+    });
+    body.querySelectorAll('.copyLog').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const e = loadLog()[parseInt(btn.dataset.i,10)];
+        if (e) navigator.clipboard.writeText(e.key).then(()=>{ btn.innerText='✓'; setTimeout(()=>btn.innerText='көшіру',1200); });
+      });
+    });
+  }
+
+  renderLog();
+</script>
+</body>
+</html>
