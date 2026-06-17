@@ -194,19 +194,19 @@
         <h2 class="text-3xl font-black text-slate-900 mb-3 tracking-tight">Араб тілінің тест жүйесі</h2>
         <p class="text-slate-600 max-w-lg mb-8 text-sm leading-relaxed">
           Қажетті тарауды таңдап, сынақты бастаңыз. Әр деңгейде біліміңізді үш бағыт бойынша тексеретін
-          <strong class="text-emerald-700">32 жаңартылған сұрақ</strong> бар. Келесі тарауды ашу үшін кемінде <strong>80%</strong> дәлдікке жету қажет.
+          <strong class="text-emerald-700">150 сұрақ</strong> бар (сөз жаттау, сөйлем құрау және грамматика аралас). Келесі тарауды ашу үшін кемінде <strong>80%</strong> дәлдікке жету қажет.
         </p>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-lg">
           <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 shadow-sm text-center">
-            <span class="text-emerald-700 font-black block text-2xl">14</span>
+            <span class="text-emerald-700 font-black block text-2xl">✓</span>
             <span class="text-xs text-slate-500 font-bold">Сөз жаттау</span>
           </div>
           <div class="p-4 bg-sky-50 rounded-2xl border border-sky-200 shadow-sm text-center">
-            <span class="text-sky-700 font-black block text-2xl">8</span>
+            <span class="text-sky-700 font-black block text-2xl">✓</span>
             <span class="text-xs text-slate-500 font-bold">Сөйлем құрау</span>
           </div>
           <div class="p-4 bg-violet-50 rounded-2xl border border-violet-200 shadow-sm text-center">
-            <span class="text-violet-700 font-black block text-2xl">10</span>
+            <span class="text-violet-700 font-black block text-2xl">✓</span>
             <span class="text-xs text-slate-500 font-bold">Грамматика</span>
           </div>
         </div>
@@ -243,7 +243,7 @@
 
         <div class="p-6">
           <div class="flex justify-between items-center mb-6">
-            <span class="text-xs text-slate-600 font-bold bg-slate-100 px-3.5 py-1.5 rounded-full" id="questionCounter">Сұрақ: 1 / 32</span>
+            <span class="text-xs text-slate-600 font-bold bg-slate-100 px-3.5 py-1.5 rounded-full" id="questionCounter">Сұрақ: 1 / 150</span>
             <span id="questionTypeBadge" class="text-xs font-black px-3 py-1.5 rounded-full">Сөз жаттау</span>
           </div>
 
@@ -295,7 +295,7 @@
         <div class="grid grid-cols-3 gap-4 w-full max-w-sm mb-8">
           <div class="p-3 bg-stone-50 rounded-xl border border-stone-200">
             <span class="text-[9px] block text-slate-400 font-bold uppercase">Сұрақ</span>
-            <span id="resultTotalQuestions" class="text-lg font-black text-slate-800">32</span>
+            <span id="resultTotalQuestions" class="text-lg font-black text-slate-800">150</span>
           </div>
           <div class="p-3 bg-stone-50 rounded-xl border border-stone-200">
             <span class="text-[9px] block text-slate-400 font-bold uppercase">Дұрыс</span>
@@ -1114,71 +1114,85 @@
     return out;
   }
 
+  const QUESTIONS_PER_CHAPTER = 150;
+
+  // Бір сөзден түрлі форматта сұрақ жасау (көбірек әрі әртүрлі сұрақ алу үшін)
+  function makeVocabQuestion(w, dir) {
+    if (dir === 'kz2ar') {
+      return {
+        type:'vocab',
+        text:'Берілген қазақша сөздің дұрыс арабша баламасын таңдаңыз:',
+        arabic:`«${w.kazakh}»`,
+        options: shuffle([w.arabic, ...uniqueDistractors(w.arabic, dictionary, 3, 'arabic')]),
+        correct:w.arabic, image:null,
+        explanation:`«${w.kazakh}» сөзі арабшада «${w.arabic}» (${w.transcription}) болады.`
+      };
+    }
+    if (dir === 'tr2kz') {
+      return {
+        type:'vocab',
+        text:`Оқылуы «${w.transcription}» болатын сөздің мағынасы қандай?`,
+        arabic:null,
+        options: shuffle([w.kazakh, ...uniqueDistractors(w.kazakh, dictionary, 3, 'kazakh')]),
+        correct:w.kazakh, image:null,
+        explanation:`«${w.arabic}» — оқылуы «${w.transcription}», мағынасы «${w.kazakh}».`
+      };
+    }
+    if (dir === 'ar2tr') {
+      return {
+        type:'vocab',
+        text:'Берілген араб сөзі қалай оқылады? (дұрыс транскрипцияны табыңыз)',
+        arabic:w.arabic,
+        options: shuffle([w.transcription, ...uniqueDistractors(w.transcription, dictionary, 3, 'transcription')]),
+        correct:w.transcription, image:null,
+        explanation:`«${w.arabic}» — «${w.transcription}» болып оқылады («${w.kazakh}»).`
+      };
+    }
+    // ar2kz (әдепкі)
+    return {
+      type:'vocab',
+      text:'Берілген араб сөзінің дұрыс қазақша аудармасын табыңыз:',
+      arabic:w.arabic,
+      options: shuffle([w.kazakh, ...uniqueDistractors(w.kazakh, dictionary, 3, 'kazakh')]),
+      correct:w.kazakh, image: w.image || null,
+      explanation:`«${w.arabic}» (${w.transcription}) — қазақша «${w.kazakh}» деген мағынаны береді.`
+    };
+  }
+  function makeSentenceQuestion(t) {
+    return { type:'sentence', text:`Сөздерді дұрыс ретпен орналастырып, мына сөйлемді арабша құраңыз: «${t.translation}»`, correctWords:[...t.words], explanation:t.explain };
+  }
+  function makeGrammarQuestion(r) {
+    return { type:'grammar', text:r.text, options: shuffle([...r.options]), correct:r.correct, explanation:r.explain };
+  }
+  function vocabAllFormats(words) {
+    const dirs = ['ar2kz','kz2ar','tr2kz','ar2tr'];
+    const out = [];
+    words.forEach(w => dirs.forEach(d => out.push(makeVocabQuestion(w, d))));
+    return out;
+  }
+
+  // Әр тарауда QUESTIONS_PER_CHAPTER (150) сұрақ. Алдымен осы тарауға тән
+  // сұрақтар, жетпесе алдыңғы тараулардан шолу сұрақтарымен толықтырылады.
   function generateChapterQuestions(chapterId) {
-    const list = [];
-    const chapterWords = dictionary.filter(w => w.chapter === chapterId);
+    // Негізгі — осы тараудың мазмұны (сөздер 4 форматта + тарауға қатысты сөйлем/грамматика)
+    const primary = [
+      ...vocabAllFormats(dictionary.filter(w => w.chapter === chapterId)),
+      ...sentenceTemplates.filter(t => t.ch.includes(chapterId)).map(makeSentenceQuestion),
+      ...grammarRules.filter(r => r.ch.includes(chapterId)).map(makeGrammarQuestion)
+    ];
+    // Толтыру — алдыңғы тараулар (шолу) басымдықпен, сосын басқа сөйлем/грамматика, сосын кейінгі тараулар
+    const earlierVocab = vocabAllFormats(dictionary.filter(w => w.chapter < chapterId));
+    const laterVocab   = vocabAllFormats(dictionary.filter(w => w.chapter > chapterId));
+    const otherSent = sentenceTemplates.filter(t => !t.ch.includes(chapterId)).map(makeSentenceQuestion);
+    const otherGram = grammarRules.filter(r => !r.ch.includes(chapterId)).map(makeGrammarQuestion);
+    const fill = [
+      ...shuffle(earlierVocab),
+      ...shuffle([...otherSent, ...otherGram]),
+      ...shuffle(laterVocab)
+    ];
 
-    // 1) Сөз жаттау — әр сөз екі бағытта (AR↔KZ), 14-ке дейін
-    const vocabPairs = [];
-    chapterWords.forEach(w => {
-      vocabPairs.push({ w, dir:'ar2kz' });
-      vocabPairs.push({ w, dir:'kz2ar' });
-    });
-    shuffle(vocabPairs).slice(0, 14).forEach((p, i) => {
-      const w = p.w;
-      if (p.dir === 'ar2kz') {
-        const alts = uniqueDistractors(w.kazakh, dictionary, 3, 'kazakh');
-        list.push({
-          type:'vocab',
-          text:'Берілген араб сөзінің дұрыс қазақша аудармасын табыңыз:',
-          arabic:w.arabic,
-          options: shuffle([w.kazakh, ...alts]),
-          correct:w.kazakh,
-          image: w.image || null,
-          explanation:`«${w.arabic}» (${w.transcription}) — қазақша «${w.kazakh}» деген мағынаны береді.`
-        });
-      } else {
-        const alts = uniqueDistractors(w.arabic, dictionary, 3, 'arabic');
-        list.push({
-          type:'vocab',
-          text:'Берілген қазақша сөздің дұрыс арабша баламасын таңдаңыз:',
-          arabic:`«${w.kazakh}»`,
-          options: shuffle([w.arabic, ...alts]),
-          correct:w.arabic,
-          image:null,
-          explanation:`«${w.kazakh}» сөзі арабшада «${w.arabic}» (${w.transcription}) болады.`
-        });
-      }
-    });
-
-    // 2) Сөйлем құрау — тарауға қатыстысын алға қойып, 8 үлгі
-    const sRelevant = sentenceTemplates.filter(t => t.ch.includes(chapterId));
-    const sOther = sentenceTemplates.filter(t => !t.ch.includes(chapterId));
-    const sPool = [...shuffle(sRelevant), ...shuffle(sOther)].slice(0, 8);
-    sPool.forEach(t => {
-      list.push({
-        type:'sentence',
-        text:`Сөздерді дұрыс ретпен орналастырып, мына сөйлемді арабша құраңыз: «${t.translation}»`,
-        correctWords:[...t.words],
-        explanation:t.explain
-      });
-    });
-
-    // 3) Грамматика — тарауға қатыстысын алға қойып, 10 сұрақ
-    const gRelevant = grammarRules.filter(r => r.ch.includes(chapterId));
-    const gOther = grammarRules.filter(r => !r.ch.includes(chapterId));
-    const gPool = [...shuffle(gRelevant), ...shuffle(gOther)].slice(0, 10);
-    gPool.forEach(r => {
-      list.push({
-        type:'grammar',
-        text:r.text,
-        options: shuffle([...r.options]),
-        correct:r.correct,
-        explanation:r.explain
-      });
-    });
-
-    return shuffle(list);
+    const combined = [...shuffle(primary), ...fill].slice(0, QUESTIONS_PER_CHAPTER);
+    return shuffle(combined);
   }
 
   // ===== Сынақ ағыны =====
