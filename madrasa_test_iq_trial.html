@@ -979,7 +979,18 @@
     { ch:[7], text:"Идафадағы бірінші мүшенің (мудаф) соңы қандай болады?", options:["Танвинсіз","Танвинмен","Сукунмен","Шаддамен"], correct:"Танвинсіз", explain:"Мудаф танвин қабылдамайды: كِتَابُ (кітәәбу), كِتَابٌ емес." },
     { ch:[8], text:"«قَرَأَ» етістігі қай жақ пен шақта тұр?", options:["Үшінші жақ, ер, өткен шақ","Бірінші жақ, келер шақ","Екінші жақ, әйел","Көпше, осы шақ"], correct:"Үшінші жақ, ер, өткен шақ", explain:"Мадидің негізгі түрі — үшінші жақ жекеше музаккар: «(ол) оқыды»." },
     { ch:[8], text:"Өткен шақ (мади) етістігінің үшінші жақ түрі қай харакатпен бітеді?", options:["Фатха (َ)","Дамма (ُ)","Касра (ِ)","Сукун (ْ)"], correct:"Фатха (َ)", explain:"Үшінші жақ жекеше мадиде соңғы әріп фатхамен: كَتَبَ، ذَهَبَ، أَكَلَ." },
-    { ch:[8], text:"«السَّلَامُ عَلَيْكُمْ» сәлеміне қандай жауап беріледі?", options:["وَعَلَيْكُمُ السَّلَامُ","مَعَ السَّلَامَةِ","شُكْرًا جَزِيلًا","إِلَى اللِّقَاءِ"], correct:"وَعَلَيْكُمُ السَّلَامُ", explain:"Сәлемнің жауабы — «وَعَلَيْكُمُ السَّلَامُ»." }
+    { ch:[8], text:"«السَّلَامُ عَلَيْكُمْ» сәлеміне қандай жауап беріледі?", options:["وَعَلَيْكُمُ السَّلَامُ","مَعَ السَّلَامَةِ","شُكْرًا جَزِيلًا","إِلَى اللِّقَاءِ"], correct:"وَعَلَيْكُمُ السَّلَامُ", explain:"Сәлемнің жауабы — «وَعَلَيْكُمُ السَّلَامُ»." },
+
+    // — қиындатылған (жоғары деңгей) грамматика сұрақтары —
+    { ch:[8,6], text:"«ذَهَبَ الْوَلَدُ إِلَى ...» — бос орынға дұрыс нұсқаны қойыңыз.", options:["الْمَدْرَسَةِ","الْمَدْرَسَةُ","الْمَدْرَسَةَ","الْمَدْرَسَةٍ"], correct:"الْمَدْرَسَةِ", explain:"«إِلَى» — хуруф әл-джар; одан кейінгі сөз касрамен (мәджрур): إِلَى الْمَدْرَسَةِ." },
+    { ch:[8], text:"«قَرَأَ الطَّالِبُ الْكِتَابَ» — толықтауыш «الْكِتَابَ» неге фатхамен?", options:["Тура толықтауыш (насб) болғандықтан","Бастауыш болғандықтан","Предлогтан кейін тұрғандықтан","Идафа болғандықтан"], correct:"Тура толықтауыш (насб) болғандықтан", explain:"Мафʼул бих (тура толықтауыш) насб күйінде, белгілі сөзде фатхамен жазылады: الْكِتَابَ." },
+    { ch:[3], text:"Қай жазылым ҚАТЕ?", options:["الْكِتَابٌ","الْكِتَابُ","كِتَابٌ","الْبَيْتُ"], correct:"الْكِتَابٌ", explain:"«ал» мен танвин бір сөзде ешқашан қатар тұрмайды, сондықтан «الْكِتَابٌ» — қате." },
+    { ch:[6], text:"Қай сөйлем грамматикалық тұрғыдан ҚАТЕ?", options:["الْوَلَدُ فِي الْغُرْفَةُ","الْوَلَدُ فِي الْغُرْفَةِ","الْبَيْتُ كَبِيرٌ","ذَهَبَ الْوَلَدُ"], correct:"الْوَلَدُ فِي الْغُرْفَةُ", explain:"«فِي»-ден кейін касра керек (الْغُرْفَةِ); даммамен «الْغُرْفَةُ» — қате." },
+    { ch:[5], text:"«بِنْت» сөзіне сын есім дұрыс үйлескен нұсқаны таңдаңыз.", options:["بِنْتٌ جَمِيلَةٌ","بِنْتٌ جَمِيلٌ","بِنْتٌ جَمِيلُونَ","بِنْتُ جَمِيلَةٍ"], correct:"بِنْتٌ جَمِيلَةٌ", explain:"Муаннас затқа сын есім ة-мен әрі белгісіздікте сәйкес келеді: بِنْتٌ جَمِيلَةٌ." },
+    { ch:[6], text:"«خَرَجَ مِنَ الْبَيْتِ» — «مِنْ» неге «مِنَ» болып өзгерді?", options:["«ал»-нің алдында екі сукун кездеспеуі үшін","Әйел жынысы үшін","Көптік үшін","Қателік бар"], correct:"«ал»-нің алдында екі сукун кездеспеуі үшін", explain:"«مِنْ» сукунмен бітеді; «الْ»-нің сукуны алдында екі сукун қатар келмеуі үшін «مِنَ» (фатха) оқылады." },
+    { ch:[7], text:"«بَيْتُ الْمُدَرِّسِ» тіркесінде «بَيْت» неге танвинсіз әрі «ал»-сіз?", options:["Ол — мудаф (идафаның бірінші мүшесі)","Әйел жынысты болғандықтан","Көпше болғандықтан","Қателік бар"], correct:"Ол — мудаф (идафаның бірінші мүшесі)", explain:"Мудаф танвин де, «ал» да қабылдамайды; ол кейінгі сөзбен (мудаф иләйһ) белгіленеді." },
+    { ch:[4], text:"«أَنْتُمَا» есімдігі нені білдіреді?", options:["Сендер екеуің (қостық)","Сендер (көпше)","Олар екеуі","Сен"], correct:"Сендер екеуің (қостық)", explain:"«أَنْتُمَا» — екінші жақ қостық (мусанна): «сендер екеуің»." },
+    { ch:[2], text:"«تِلْكَ» сілтеу есімдігі қандай затқа қолданылады?", options:["Алыс тұрған әйел жынысты затқа","Жақын тұрған ер жынысты затқа","Тек көпшілікке","Тек жансыз затқа"], correct:"Алыс тұрған әйел жынысты затқа", explain:"«تِلْكَ» — алыстағы муаннас (әйел жынысты) затты көрсетеді; еркегіне «ذَلِكَ»." }
   ];
 
   // ===== SVG суреттер =====
@@ -1170,6 +1181,38 @@
     return out;
   }
 
+  // ===== Қиындатылған дистракторлар (ұқсас әрі шатастыратын қате нұсқалар) =====
+  function stripHarakat(s){ return String(s).replace(/[ً-ْٰـ]/g,''); }
+  function arSimilarity(a, b){
+    a = stripHarakat(a); b = stripHarakat(b);
+    const sb = new Set(b.split(''));
+    let common = 0;
+    for (const ch of new Set(a.split(''))) if (sb.has(ch)) common++;
+    return common*2 - Math.abs(a.length - b.length) + (a[0] === b[0] ? 2 : 0);
+  }
+  function pickDistinctVals(words, correctVal, key, n){
+    const out = [], seen = new Set([correctVal]);
+    for (const w of words){ const v = w[key]; if (v != null && !seen.has(v)){ seen.add(v); out.push(v); if (out.length===n) break; } }
+    if (out.length < n){ for (const w of shuffle(dictionary)){ const v = w[key]; if (v != null && !seen.has(v)){ seen.add(v); out.push(v); if (out.length===n) break; } } }
+    return out;
+  }
+  // Мағынасы/жазылуы жақын сөздерден қате нұсқа таңдау
+  function smartDistractors(word, key, n){
+    const correctVal = word[key];
+    if (key === 'arabic' || key === 'transcription'){
+      const ranked = dictionary
+        .filter(w => w !== word && w[key] !== correctVal)
+        .map(w => ({ w, s: arSimilarity(correctVal, w[key]) + (w.chapter === word.chapter ? 1 : 0) }))
+        .sort((a,b) => b.s - a.s)
+        .slice(0, Math.max(n + 4, 7))
+        .map(x => x.w);
+      return pickDistinctVals(shuffle(ranked), correctVal, key, n);
+    }
+    const sameCh = dictionary.filter(w => w !== word && w.chapter === word.chapter);
+    const otherCh = dictionary.filter(w => w !== word && w.chapter !== word.chapter);
+    return pickDistinctVals([...shuffle(sameCh), ...shuffle(otherCh)], correctVal, key, n);
+  }
+
   const QUESTIONS_PER_CHAPTER = 150;
 
   // Бір сөзден түрлі форматта сұрақ жасау (көбірек әрі әртүрлі сұрақ алу үшін)
@@ -1179,7 +1222,7 @@
         type:'vocab',
         text:'Берілген қазақша сөздің дұрыс арабша баламасын таңдаңыз:',
         arabic:`«${w.kazakh}»`,
-        options: shuffle([w.arabic, ...uniqueDistractors(w.arabic, dictionary, 3, 'arabic')]),
+        options: shuffle([w.arabic, ...smartDistractors(w, 'arabic', 3)]),
         correct:w.arabic, image:null,
         explanation:`«${w.kazakh}» сөзі арабшада «${w.arabic}» (${w.transcription}) болады.`
       };
@@ -1189,7 +1232,7 @@
         type:'vocab',
         text:`Оқылуы «${w.transcription}» болатын сөздің мағынасы қандай?`,
         arabic:null,
-        options: shuffle([w.kazakh, ...uniqueDistractors(w.kazakh, dictionary, 3, 'kazakh')]),
+        options: shuffle([w.kazakh, ...smartDistractors(w, 'kazakh', 3)]),
         correct:w.kazakh, image:null,
         explanation:`«${w.arabic}» — оқылуы «${w.transcription}», мағынасы «${w.kazakh}».`
       };
@@ -1199,7 +1242,7 @@
         type:'vocab',
         text:'Берілген араб сөзі қалай оқылады? (дұрыс транскрипцияны табыңыз)',
         arabic:w.arabic,
-        options: shuffle([w.transcription, ...uniqueDistractors(w.transcription, dictionary, 3, 'transcription')]),
+        options: shuffle([w.transcription, ...smartDistractors(w, 'transcription', 3)]),
         correct:w.transcription, image:null,
         explanation:`«${w.arabic}» — «${w.transcription}» болып оқылады («${w.kazakh}»).`
       };
@@ -1209,7 +1252,7 @@
       type:'vocab',
       text:'Берілген араб сөзінің дұрыс қазақша аудармасын табыңыз:',
       arabic:w.arabic,
-      options: shuffle([w.kazakh, ...uniqueDistractors(w.kazakh, dictionary, 3, 'kazakh')]),
+      options: shuffle([w.kazakh, ...smartDistractors(w, 'kazakh', 3)]),
       correct:w.kazakh, image: w.image || null,
       explanation:`«${w.arabic}» (${w.transcription}) — қазақша «${w.kazakh}» деген мағынаны береді.`
     };
@@ -1334,12 +1377,17 @@
 
   // ===== Сөйлем құрастырғыш =====
   function initSentenceBuilder(correctWords) {
-    const distractorBank = ["فِي","عَلَى","مِنْ","وَ","هُوَ","هِيَ","كَبِيرٌ","جَمِيلٌ","قَلَمٌ","لَا"];
+    const distractorBank = ["فِي","عَلَى","مِنْ","إِلَى","وَ","هُوَ","هِيَ","هَذَا","هَذِهِ","ذَلِكَ","كَبِيرٌ","صَغِيرٌ","جَمِيلٌ","جَمِيلَةٌ","قَلَمٌ","كِتَابٌ","الْبَيْتُ","لَا","هُمْ","نَحْنُ"];
     let pieces = [...correctWords];
-    if (correctWords.length >= 3) {
-      const d = shuffle(distractorBank).find(x => !correctWords.includes(x));
-      if (d) pieces.push(d);
-    }
+    // Сөйлем неғұрлым ұзын болса, соғұрлым көп шатастырғыш сөз қосылады
+    const numDistractors = correctWords.length >= 4 ? 3 : (correctWords.length === 3 ? 2 : 1);
+    const extra = [];
+    // Жыныс бойынша қарама-қарсы сілтеу есімдігін қосып шатастырамыз
+    if (correctWords.includes("هَذَا") && !correctWords.includes("هَذِهِ")) extra.push("هَذِهِ");
+    if (correctWords.includes("هَذِهِ") && !correctWords.includes("هَذَا")) extra.push("هَذَا");
+    const bank = shuffle(distractorBank).filter(x => !correctWords.includes(x));
+    const chosen = [...extra, ...bank].filter((v,i,a) => a.indexOf(v) === i).slice(0, numDistractors);
+    pieces.push(...chosen);
     builderPool = shuffle(pieces).map(w => ({ word:w, used:false }));
     builderOrder = [];
     renderSentenceBuilder();
