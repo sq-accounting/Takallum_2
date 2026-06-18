@@ -213,7 +213,7 @@
         <h2 class="text-3xl font-black text-slate-900 mb-3 tracking-tight">Араб тілінің тест жүйесі</h2>
         <p class="text-slate-600 max-w-lg mb-5 text-sm leading-relaxed">
           Қажетті тарауды таңдап, сынақты бастаңыз. Әр деңгейде біліміңізді үш бағыт бойынша тексеретін
-          <strong class="text-emerald-700">150 сұрақ</strong> бар (сөз жаттау, сөйлем құрау және грамматика аралас). Келесі тарауды ашу үшін кемінде <strong>80%</strong> дәлдікке жету қажет.
+          <strong class="text-emerald-700">тақырыпқа арналған деңгейлі сұрақтар</strong> бар (сөз жаттау, сөйлем құрау, грамматика). Келесі тарауды ашу үшін кемінде <strong>80%</strong> дәлдікке жету қажет.
         </p>
         <div id="introTrialNote" class="max-w-lg mb-8 w-full p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed flex items-center justify-center gap-2">
           <svg class="w-4 h-4 shrink-0 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
@@ -933,7 +933,31 @@
     { ch:[8], words:["شَرِبَ","الرَّجُلُ","الْمَاءَ"], translation:"Ер адам су ішті", explain:"Толықтауыш «الْمَاءَ» фатхамен (насб) аяқталады." },
     { ch:[8], words:["أَكَلَ","الْوَلَدُ","الْخُبْزَ"], translation:"Бала нан жеді", explain:"«أَكَلَ» етістігі + бастауыш + толықтауыш «الْخُبْزَ»." },
     { ch:[8], words:["فَتَحَ","الْوَلَدُ","الْبَابَ"], translation:"Бала есікті ашты", explain:"Толықтауыш «الْبَابَ» фатхамен жазылады." },
-    { ch:[8], words:["جَلَسَ","الطَّالِبُ"], translation:"Студент отырды", explain:"«جَلَسَ» — өткен шақ етістігі; «الطَّالِبُ» — бастауыш (рафʼ, дамма)." }
+    { ch:[8], words:["جَلَسَ","الطَّالِبُ"], translation:"Студент отырды", explain:"«جَلَسَ» — өткен шақ етістігі; «الطَّالِبُ» — бастауыш (рафʼ, дамма)." },
+
+    // — кәсіби деңгейдегі күрделірек сөйлемдер —
+    { ch:[2,3], words:["هَذَا","الرَّجُلُ","تَاجِرٌ"], translation:"Бұл кісі — саудагер", explain:"Сілтеу есімдігі (هَذَا) + белгілі зат есім (الرَّجُلُ) + белгісіз баяндауыш (تَاجِرٌ). Белгілі бастауыш пен белгісіз баяндауыштан толық сөйлем құралады." },
+    { ch:[2,5], words:["هَذِهِ","الْبِنْتُ","جَمِيلَةٌ"], translation:"Бұл қыз әдемі", explain:"«هَذِهِ» муаннас затқа; «الْبِنْتُ» — бастауыш, «جَمِيلَةٌ» — баяндауыш (ة-мен үйлескен)." },
+    { ch:[2], words:["هَلْ","هَذَا","بَابٌ"], translation:"Бұл есік пе?", explain:"«هَلْ» — жалпы сұраулық сөз; сөйлемді иә/жоқ сұрағына айналдырады." },
+    { ch:[2], words:["مَا","هَذِهِ"], translation:"Бұл не? (әйел жынысты затқа)", explain:"«مَا» — жансыз зат туралы сұрақ; «هَذِهِ» муаннас затқа сілтейді." },
+    { ch:[3,5], words:["الشَّمْسُ","كَبِيرَةٌ"], translation:"Күн үлкен", explain:"«شَمْس» — муаннас, сондықтан «كَبِيرَةٌ» (ة-мен). «الشَّمْس» — күн әрпі (ل жасырын оқылады)." },
+    { ch:[3,5], words:["الْكِتَابُ","الْجَدِيدُ","كَبِيرٌ"], translation:"Жаңа кітап үлкен", explain:"Белгілі сын есім тіркесі (الْكِتَابُ الْجَدِيدُ) — бастауыш; «كَبِيرٌ» — белгісіз баяндауыш." },
+    { ch:[4,5], words:["أَنَا","طَالِبٌ","جَدِيدٌ"], translation:"Мен — жаңа студентпін", explain:"«أَنَا» — бастауыш; «طَالِبٌ» — баяндауыш; «جَدِيدٌ» — оны сипаттайтын сын есім." },
+    { ch:[4,5], words:["هُوَ","رَجُلٌ","كَبِيرٌ"], translation:"Ол — үлкен кісі", explain:"«هُوَ» жіктеу есімдігі; «رَجُلٌ كَبِيرٌ» — сипатталған зат есім (баяндауыш)." },
+    { ch:[5], words:["الْبِنْتُ","الصَّغِيرَةُ","جَمِيلَةٌ"], translation:"Кішкентай қыз әдемі", explain:"Барлық мүше муаннас әрі белгілілікте үйлескен: الْبِنْتُ الصَّغِيرَةُ + جَمِيلَةٌ (баяндауыш)." },
+    { ch:[6,5], words:["الْكِتَابُ","عَلَى","الْمَكْتَبِ","الْكَبِيرِ"], translation:"Кітап үлкен үстелдің үстінде", explain:"«عَلَى»-дан кейін касра: الْمَكْتَبِ; сын есім де касрамен үйлеседі: الْكَبِيرِ." },
+    { ch:[6], words:["الطَّالِبُ","فِي","الْمَكْتَبَةِ"], translation:"Студент кітапханада", explain:"«فِي»-ден кейінгі сөз касрамен аяқталады: الْمَكْتَبَةِ." },
+    { ch:[6], words:["الْقَلَمُ","تَحْتَ","الْكِتَابِ"], translation:"Қалам кітаптың астында", explain:"«تَحْتَ» (астында) — орын үстеуі; одан кейінгі сөз касрамен: الْكِتَابِ." },
+    { ch:[6], words:["أَيْنَ","الْمُدَرِّسُ"], translation:"Мұғалім қайда?", explain:"«أَيْنَ» — орынды сұрайды; «الْمُدَرِّسُ» — бастауыш (рафʼ)." },
+    { ch:[7,5], words:["سَيَّارَةُ","التَّاجِرِ","جَدِيدَةٌ"], translation:"Саудагердің көлігі жаңа", explain:"Идафа (سَيَّارَةُ التَّاجِرِ) — муаннас бастауыш; баяндауыш «جَدِيدَةٌ»." },
+    { ch:[7], words:["بَيْتُ","الْإِمَامِ","كَبِيرٌ"], translation:"Имамның үйі үлкен", explain:"Мудаф «بَيْتُ» танвинсіз; мудаф иләйһ «الْإِمَامِ» касрамен." },
+    { ch:[7,6], words:["كِتَابُ","الطَّالِبِ","عَلَى","الْمَكْتَبِ"], translation:"Студенттің кітабы үстелде", explain:"Идафа (كِتَابُ الطَّالِبِ) + «عَلَى» предлогы соңғы сөзді касраға айналдырады." },
+    { ch:[8], words:["فَتَحَ","الْمُدَرِّسُ","الْبَابَ"], translation:"Мұғалім есікті ашты", explain:"Етістік (فَتَحَ) + бастауыш (الْمُدَرِّسُ) + тура толықтауыш (الْبَابَ — насб, фатха)." },
+    { ch:[8], words:["شَرِبَ","الْوَلَدُ","اللَّبَنَ"], translation:"Бала сүт ішті", explain:"«اللَّبَنَ» — тура толықтауыш (насб). «ل» — күн әрпі, сондықтан اللَّبَن." },
+    { ch:[8,6], words:["جَلَسَ","الرَّجُلُ","عَلَى","الْكُرْسِيِّ"], translation:"Кісі орындыққа отырды", explain:"Етістік + бастауыш + «عَلَى» предлогы; одан кейінгі сөз касрамен: الْكُرْسِيِّ." },
+    { ch:[8,6], words:["خَرَجَ","الْمُدَرِّسُ","مِنَ","الْفَصْلِ"], translation:"Мұғалім сыныптан шықты", explain:"«مِنْ» дауысты алдында «مِنَ» болады; одан кейінгі сөз касрамен: الْفَصْلِ." },
+    { ch:[8], words:["دَخَلَ","الطَّالِبُ","الْفَصْلَ"], translation:"Студент сыныпқа кірді", explain:"«دَخَلَ» етістігі тура толықтауыш алады: الْفَصْلَ (насб, фатха)." },
+    { ch:[8,7], words:["قَرَأَ","الْوَلَدُ","كِتَابَ","الْمُدَرِّسِ"], translation:"Бала мұғалімнің кітабын оқыды", explain:"Толықтауыш — идафа (كِتَابَ الْمُدَرِّسِ): мудаф «كِتَابَ» насб (фатха), мудаф иләйһ «الْمُدَرِّسِ» касрамен." }
   ];
 
   // ===== Грамматика сұрақтары (тарауларға таңбаланған) =====
@@ -1213,48 +1237,27 @@
     return pickDistinctVals([...shuffle(sameCh), ...shuffle(otherCh)], correctVal, key, n);
   }
 
-  const QUESTIONS_PER_CHAPTER = 150;
+  const REVIEW_FROM_PREVIOUS = 10; // алдыңғы тараулардан шектеулі шолу сөздері
 
-  // Бір сөзден түрлі форматта сұрақ жасау (көбірек әрі әртүрлі сұрақ алу үшін)
+  // Сөздік сұрағы — тек екі мағыналы бағыт (транскрипциядан жасанды сұрақ ЖОҚ)
   function makeVocabQuestion(w, dir) {
     if (dir === 'kz2ar') {
       return {
         type:'vocab',
-        text:'Берілген қазақша сөздің дұрыс арабша баламасын таңдаңыз:',
+        text:'«' + w.kazakh + '» сөзінің дұрыс арабша жазылуын таңдаңыз:',
         arabic:`«${w.kazakh}»`,
         options: shuffle([w.arabic, ...smartDistractors(w, 'arabic', 3)]),
         correct:w.arabic, image:null,
-        explanation:`«${w.kazakh}» сөзі арабшада «${w.arabic}» (${w.transcription}) болады.`
+        explanation:`«${w.kazakh}» — арабша «${w.arabic}» (${w.transcription}).`
       };
     }
-    if (dir === 'tr2kz') {
-      return {
-        type:'vocab',
-        text:`Оқылуы «${w.transcription}» болатын сөздің мағынасы қандай?`,
-        arabic:null,
-        options: shuffle([w.kazakh, ...smartDistractors(w, 'kazakh', 3)]),
-        correct:w.kazakh, image:null,
-        explanation:`«${w.arabic}» — оқылуы «${w.transcription}», мағынасы «${w.kazakh}».`
-      };
-    }
-    if (dir === 'ar2tr') {
-      return {
-        type:'vocab',
-        text:'Берілген араб сөзі қалай оқылады? (дұрыс транскрипцияны табыңыз)',
-        arabic:w.arabic,
-        options: shuffle([w.transcription, ...smartDistractors(w, 'transcription', 3)]),
-        correct:w.transcription, image:null,
-        explanation:`«${w.arabic}» — «${w.transcription}» болып оқылады («${w.kazakh}»).`
-      };
-    }
-    // ar2kz (әдепкі)
     return {
       type:'vocab',
-      text:'Берілген араб сөзінің дұрыс қазақша аудармасын табыңыз:',
+      text:'Мына араб сөзінің дұрыс аудармасын таңдаңыз:',
       arabic:w.arabic,
       options: shuffle([w.kazakh, ...smartDistractors(w, 'kazakh', 3)]),
       correct:w.kazakh, image: w.image || null,
-      explanation:`«${w.arabic}» (${w.transcription}) — қазақша «${w.kazakh}» деген мағынаны береді.`
+      explanation:`«${w.arabic}» (${w.transcription}) — «${w.kazakh}».`
     };
   }
   function makeSentenceQuestion(t) {
@@ -1263,33 +1266,26 @@
   function makeGrammarQuestion(r) {
     return { type:'grammar', text:r.text, options: shuffle([...r.options]), correct:r.correct, explanation:r.explain };
   }
-  function vocabAllFormats(words) {
-    const dirs = ['ar2kz','kz2ar','tr2kz','ar2tr'];
-    const out = [];
-    words.forEach(w => dirs.forEach(d => out.push(makeVocabQuestion(w, d))));
-    return out;
-  }
 
-  // Әр тарауда QUESTIONS_PER_CHAPTER (150) сұрақ. Алдымен осы тарауға тән
-  // сұрақтар, жетпесе алдыңғы тараулардан шолу сұрақтарымен толықтырылады.
+  // Әр тарау ӨЗ тақырыбына шоғырланады: сөздер бір-ақ рет, сосын тарауға тән
+  // сөйлем мен грамматика, ең соңында алдыңғы тараулардан шектеулі шолу.
   function generateChapterQuestions(chapterId) {
-    const primary = [
-      ...vocabAllFormats(dictionary.filter(w => w.chapter === chapterId)),
-      ...sentenceTemplates.filter(t => t.ch.includes(chapterId)).map(makeSentenceQuestion),
-      ...grammarRules.filter(r => r.ch.includes(chapterId)).map(makeGrammarQuestion)
-    ];
-    const earlierVocab = vocabAllFormats(dictionary.filter(w => w.chapter < chapterId));
-    const laterVocab   = vocabAllFormats(dictionary.filter(w => w.chapter > chapterId));
-    const otherSent = sentenceTemplates.filter(t => !t.ch.includes(chapterId)).map(makeSentenceQuestion);
-    const otherGram = grammarRules.filter(r => !r.ch.includes(chapterId)).map(makeGrammarQuestion);
-    const fill = [
-      ...shuffle(earlierVocab),
-      ...shuffle([...otherSent, ...otherGram]),
-      ...shuffle(laterVocab)
-    ];
-
-    const combined = [...shuffle(primary), ...fill].slice(0, QUESTIONS_PER_CHAPTER);
-    return shuffle(combined);
+    const out = [];
+    // 1) Осы тараудың сөздері — әрқайсысы БІР рет, бағыты кездейсоқ, ұқсас (қиын) дистрактормен
+    shuffle(dictionary.filter(w => w.chapter === chapterId)).forEach(w => {
+      out.push(makeVocabQuestion(w, Math.random() < 0.5 ? 'ar2kz' : 'kz2ar'));
+    });
+    // 2) Осы тарауға тән сөйлемдер
+    sentenceTemplates.filter(t => t.ch.includes(chapterId)).forEach(t => out.push(makeSentenceQuestion(t)));
+    // 3) Осы тарауға тән грамматика
+    grammarRules.filter(r => r.ch.includes(chapterId)).forEach(r => out.push(makeGrammarQuestion(r)));
+    // 4) Шектеулі шолу: алдыңғы тараулардың сөздері (тарауларды бірдей болудан сақтайды)
+    if (chapterId > 1) {
+      shuffle(dictionary.filter(w => w.chapter < chapterId)).slice(0, REVIEW_FROM_PREVIOUS).forEach(w => {
+        out.push(makeVocabQuestion(w, Math.random() < 0.5 ? 'ar2kz' : 'kz2ar'));
+      });
+    }
+    return shuffle(out);
   }
 
   // ===== Сынақ ағыны =====
